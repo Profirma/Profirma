@@ -899,6 +899,7 @@
             </div>
           </div>
 
+          <!-- Cédula y Código Dactilar -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Cédula o RUC *</label>
@@ -908,28 +909,48 @@
               </div>
             </div>
             <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Código Dactilar *</label>
+              <div class="relative">
+                <i data-lucide="fingerprint" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
+                <input type="text" id="clientCodigoDactilar" required placeholder="Ej. V123456789" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
+              </div>
+              <span class="text-[10px] text-slate-400 mt-1 block">Parte posterior de tu cédula.</span>
+            </div>
+          </div>
+
+          <!-- Teléfono y Correo -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Teléfono o WhatsApp *</label>
               <div class="relative">
                 <i data-lucide="phone" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
                 <input type="tel" id="clientPhone" required placeholder="0991234567" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
               </div>
             </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Correo Electrónico *</label>
+              <div class="relative">
+                <i data-lucide="mail" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
+                <input type="email" id="clientEmail" required placeholder="ejemplo@correo.com" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
+              </div>
+            </div>
           </div>
 
+          <!-- Dirección de Residencia -->
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Correo Electrónico (Para recibir la firma) *</label>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Dirección de Residencia *</label>
             <div class="relative">
-              <i data-lucide="mail" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
-              <input type="email" id="clientEmail" required placeholder="ejemplo@correo.com" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
+              <i data-lucide="map-pin" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
+              <input type="text" id="clientDireccion" required placeholder="Ej. Av. Amazonas y 10 de Agosto" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Provincia de Residencia</label>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Provincia de Residencia *</label>
             <select id="clientProvince" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-              <option value="Pichincha (Quito)">Pichincha (Quito)</option>
-              <option value="Guayas (Guayaquil)">Guayas (Guayaquil)</option>
-              <option value="Azuay (Cuenca)">Azuay (Cuenca)</option>
+              <option value="Pichincha">Pichincha</option>
+              <option value="Guayas">Guayas</option>
+              <option value="Azuay">Azuay</option>
               <option value="Manabí">Manabí</option>
               <option value="Los Ríos">Los Ríos</option>
               <option value="El Oro">El Oro</option>
@@ -1121,18 +1142,47 @@
         }
       }
 
-      // INTEGRACIÓN CON EL BACKEND EN RAILWAY PARA EL ENVÍO DE CORREOS Y API ENEX
+      // INTEGRACIÓN CON EL BACKEND EN RAILWAY PARA EL ENVÍO DE DATOS Y API ENEXT
       function simulatePaymentSuccess() {
-        const name = document.getElementById('clientName').value || 'Cliente Registrado';
+        const fullName = document.getElementById('clientName').value || 'Cliente Registrado';
         const id = document.getElementById('clientId').value || '0000000000';
+        const codigoDactilar = document.getElementById('clientCodigoDactilar').value || '';
         const email = document.getElementById('clientEmail').value || 'cliente@correo.com';
         const phone = document.getElementById('clientPhone').value || '0000000000';
+        const direccion = document.getElementById('clientDireccion').value || 'Sin dirección';
         const province = document.getElementById('clientProvince').value || 'Pichincha';
 
-        document.getElementById('res-name').textContent = name;
+        // Separar nombres y apellidos para la API de eNext
+        const partes = fullName.trim().split(' ');
+        const nombres = partes[0] || '';
+        const apellidos = partes.slice(1).join(' ') || 'General';
+
+        document.getElementById('res-name').textContent = fullName;
         document.getElementById('res-id').textContent = id;
         document.getElementById('res-email').textContent = email;
         document.getElementById('res-plan').textContent = currentVigencia + ' (' + currentPrecio + ')';
+
+        // Determinar código de perfil según vigencia
+        let perfilFirma = "002"; // 1 Año por defecto
+        if (currentVigencia.includes('2')) perfilFirma = "003";
+        else if (currentVigencia.includes('3')) perfilFirma = "004";
+        else if (currentVigencia.includes('5')) perfilFirma = "005";
+
+        const datosEnvio = {
+            numero_tramite: "TRM-" + Math.floor(100000 + Math.random() * 900000),
+            perfil_firma: perfilFirma,
+            nombres: nombres,
+            apellidos: apellidos,
+            cedula: id,
+            codigo_dactilar: codigoDactilar,
+            correo: email,
+            provincia: province,
+            ciudad: province,
+            direccion: direccion,
+            celular: phone,
+            vigencia: currentVigencia,
+            precio: currentPrecio
+        };
 
         // Enviar datos al backend PHP en Railway
         fetch('https://profirma-production.up.railway.app/procesar_pago.php', {
@@ -1140,19 +1190,14 @@
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                nombre: name,
-                cedula: id,
-                email: email,
-                telefono: phone,
-                provincia: province,
-                vigencia: currentVigencia,
-                precio: currentPrecio
-            })
+            body: JSON.stringify(datosEnvio)
         })
         .then(response => response.json())
         .then(data => {
             console.log('Backend procesado con éxito:', data);
+            if (data.link_biometria) {
+                window.enextBiometriaLink = data.link_biometria;
+            }
         })
         .catch(error => {
             console.error('Error al conectar con el backend:', error);
@@ -1163,7 +1208,11 @@
       }
 
       function launchENextBiometrics() {
-        alert('Redirigiendo a la plataforma oficial de verificación biométrica eNext...');
+        if (window.enextBiometriaLink) {
+            window.location.href = window.enextBiometriaLink;
+        } else {
+            alert('Redirigiendo a la plataforma oficial de verificación biométrica eNext...');
+        }
       }
 
       window.onload = function() {
