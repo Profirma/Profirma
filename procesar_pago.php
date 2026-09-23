@@ -4,8 +4,10 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
+    http_response_code(200);
+    exit;
 }
+
 header('Content-Type: application/json');
 
 // Recibir los datos enviados desde el formulario web
@@ -32,7 +34,7 @@ $datosEnext = [
     "parroquia" => "Inaquito",
     "direccion" => $input['direccion'] ?? 'Matriz',
     "celular" => $input['celular'] ?? '',
-    "tipo_envio" => "EMAIL", // Envío automático de correo por eNext
+    "tipo_envio" => "EMAIL",
     "tipo_clave" => 1
 ];
 
@@ -52,10 +54,6 @@ $curlError = curl_error($ch);
 curl_close($ch);
 
 if ($httpCode === 200 && $response) {
-    // Decodificar la respuesta de eNext para verificar si devolvió el enlace o éxito
-    $enextData = json_decode($response, true);
-    
-    // Si eNext responde correctamente, asegúrate de retornar la estructura esperada por tu frontend
     echo $response;
 } else {
     echo json_encode([
