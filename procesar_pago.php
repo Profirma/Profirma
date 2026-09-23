@@ -1,363 +1,113 @@
 <?php
+declare(strict_types=1);
 
-// =====================================================
-// PROFIRMA - CONEXIÓN ENEXT
-// MODO DEBUG TEMPORAL
-// =====================================================
+header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store');
 
-// ---------- CORS ----------
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Content-Type: application/json; charset=UTF-8");
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
-
-// Solo permitir POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-
-    echo json_encode([
-        'ok' => false,
-        'mensaje' => 'Método no permitido. Utiliza POST.'
-    ], JSON_UNESCAPED_UNICODE);
-
+    echo json_encode(['codigo' => 0, 'mensaje' => 'Método no permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-
-// =====================================================
-// 1. LEER JSON RECIBIDO DESDE INDEX.HTML
-// =====================================================
-
-$rawInput = file_get_contents('php://input');
-$input = json_decode($rawInput, true);
-
-if (!is_array($input)) {
-
-    http_response_code(400);
-
-    echo json_encode([
-        'ok' => false,
-        'mensaje' => 'Datos inválidos o JSON vacío',
-        'json_error' => json_last_error_msg()
-    ], JSON_UNESCAPED_UNICODE);
-
+function fail(int $http, string $message): never {
+    http_response_code($http);
+    echo json_encode(['codigo' => 0, 'mensaje' => $message], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
+$raw = file_get_contents('php://input');
+$input = json_decode($raw ?: '', true);
+if (!is_array($input)) fail(400, 'Solicitud JSON inválida.');
 
-// =====================================================
-// 2. OBTENER Y LIMPIAR DATOS
-// =====================================================
-
-$numeroTramite = trim(
-    $input['numero_tramite'] ?? ('TRM-' . date('YmdHis') . '-' . rand(100,999))
-);
-
-$perfilFirma = trim($input['perfil_firma'] ?? '002');
-
-$nombres = trim($input['nombres'] ?? '');
-
-$apellidos = trim($input['apellidos'] ?? '');
-
-$cedula = trim($input['cedula'] ?? '');
-
-$codigoDactilar = trim($input['codigo_dactilar'] ?? '');
-
-$correo = trim($input['correo'] ?? '');
-
-$provincia = trim($input['provincia'] ?? 'Pichincha');
-
-$ciudad = trim($input['ciudad'] ?? 'Quito');
-
-$direccion = trim($input['direccion'] ?? '');
-
-$celular = trim($input['celular'] ?? '');
-
-
-// =====================================================
-// 3. VALIDACIONES BÁSICAS
-// =====================================================
-
-$errores = [];
-
-if ($nombres === '') {
-    $errores[] = 'Falta nombres';
+$apiUrl  = trim((string) getenv('SIGN_API_URL'));
+$apiUser = trim((string) getenv('SIGN_API_USER'));
+$apiPass = (string) getenv('SIGN_API_PASSWORD');
+if ($apiUrl === '' || $apiUser === '' || $apiPass === '') {
+    fail(500, 'La integración privada de PROFIRMA no está configurada.');
 }
 
-if ($apellidos === '') {
-    $errores[] = 'Falta apellidos';
+$required = ['numero_tramite','perfil_firma','nombres','apellidos','cedula','codigo_dactilar','correo','provincia','ciudad','parroquia','direccion','celular'];
+foreach ($required as $field) {
+    if (!isset($input[$field]) || trim((string)$input[$field]) === '') {
+        fail(422, 'Falta el campo requerido: ' . $field . '.');
+    }
 }
 
-if ($cedula === '') {
-    $errores[] = 'Falta cédula';
-}
+$cedula = preg_replace('/\D+/', '', (string)$input['cedula']);
+$celular = preg_replace('/[^0-9+]/', '', (string)$input['celular']);
+$email = trim((string)$input['correo']);
+$perfil = trim((string)$input['perfil_firma']);
 
-if ($codigoDactilar === '') {
-    $errores[] = 'Falta código dactilar';
-}
+if (!preg_match('/^\d{10}$/', $cedula)) fail(422, 'La cédula debe tener 10 dígitos.');
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) fail(422, 'El correo electrónico no es válido.');
+if (!in_array($perfil, ['002','005','010','013'], true)) fail(422, 'La vigencia seleccionada no está disponible.');
 
-if ($correo === '') {
-    $errores[] = 'Falta correo';
-}
-
-if ($correo !== '' && !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-    $errores[] = 'El correo electrónico no tiene un formato válido';
-}
-
-if ($celular === '') {
-    $errores[] = 'Falta celular';
-}
-
-if ($direccion === '') {
-    $errores[] = 'Falta dirección';
-}
-
-
-if (!empty($errores)) {
-
-    http_response_code(400);
-
-    echo json_encode([
-        'ok' => false,
-        'mensaje' => 'Faltan datos obligatorios',
-        'errores' => $errores
-    ], JSON_UNESCAPED_UNICODE);
-
-    exit;
-}
-
-
-// =====================================================
-// 4. CREDENCIALES ENEXT
-// =====================================================
-//
-// TEMPORALMENTE dejo aquí las mismas credenciales
-// que ya estabas utilizando.
-//
-// IMPORTANTE:
-// Después debemos moverlas a variables de entorno
-// de Railway.
-//
-
-$usuarioEnext = 'facbiometria';
-$passwordEnext = 'CAMBIA_AQUI_TU_PASSWORD_ENEXT';
-
-
-// =====================================================
-// 5. DATOS QUE SE ENVIARÁN A ENEXT
-// =====================================================
-
-$datosEnext = [
-
-    'numero_tramite' => $numeroTramite,
-
-    'usuario' => $usuarioEnext,
-
-    'password' => $passwordEnext,
-
-    'perfil_firma' => $perfilFirma,
-
-    'nombres' => $nombres,
-
-    'apellidos' => $apellidos,
-
-    'cedula' => $cedula,
-
-    'codigo_dactilar' => $codigoDactilar,
-
-    'correo' => $correo,
-
-    'provincia' => $provincia,
-
-    'ciudad' => $ciudad,
-
-    'parroquia' => 'Inaquito',
-
-    'direccion' => $direccion,
-
-    'celular' => $celular,
-
-    'tipo_envio' => 'EMAIL',
-
-    'tipo_clave' => 1
+$payload = [
+    'numero_tramite'  => trim((string)$input['numero_tramite']),
+    'usuario'         => $apiUser,
+    'password'        => $apiPass,
+    'perfil_firma'    => $perfil,
+    'nombres'         => trim((string)$input['nombres']),
+    'apellidos'       => trim((string)$input['apellidos']),
+    'cedula'          => $cedula,
+    'codigo_dactilar' => strtoupper(trim((string)$input['codigo_dactilar'])),
+    'correo'          => $email,
+    'provincia'       => trim((string)$input['provincia']),
+    'ciudad'          => trim((string)$input['ciudad']),
+    'parroquia'       => trim((string)$input['parroquia']),
+    'direccion'       => trim((string)$input['direccion']),
+    'celular'         => $celular,
+    'tipo_envio'      => 'EMAIL',
+    'tipo_clave'      => 1,
 ];
 
-
-// =====================================================
-// 6. CONVERTIR A JSON
-// =====================================================
-
-$jsonEnext = json_encode(
-    $datosEnext,
-    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-);
-
-if ($jsonEnext === false) {
-
-    http_response_code(500);
-
-    echo json_encode([
-        'ok' => false,
-        'mensaje' => 'No se pudo generar el JSON para eNext',
-        'error' => json_last_error_msg()
-    ], JSON_UNESCAPED_UNICODE);
-
-    exit;
-}
-
-
-// =====================================================
-// 7. LLAMAR API ENEXT
-// =====================================================
-
-$urlEnext = 'https://enext.online/factureroweb/apiFactu/PNB.php';
-
-$ch = curl_init($urlEnext);
-
+$ch = curl_init($apiUrl);
 curl_setopt_array($ch, [
-
-    CURLOPT_RETURNTRANSFER => true,
-
     CURLOPT_POST => true,
-
-    CURLOPT_POSTFIELDS => $jsonEnext,
-
+    CURLOPT_RETURNTRANSFER => true,
     CURLOPT_CONNECTTIMEOUT => 15,
-
     CURLOPT_TIMEOUT => 45,
-
-    CURLOPT_HTTPHEADER => [
-
-        'Content-Type: application/json',
-
-        'Accept: application/json',
-
-        'Authorization: Basic ' .
-            base64_encode($usuarioEnext . ':' . $passwordEnext)
-
-    ]
-
+    CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+    CURLOPT_USERPWD => $apiUser . ':' . $apiPass,
+    CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Accept: application/json'],
+    CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
 ]);
 
-
-// =====================================================
-// 8. EJECUTAR PETICIÓN
-// =====================================================
-
-$response = curl_exec($ch);
-
-$httpCode = curl_getinfo(
-    $ch,
-    CURLINFO_HTTP_CODE
-);
-
-$curlErrorNumber = curl_errno($ch);
-
+$responseBody = curl_exec($ch);
 $curlError = curl_error($ch);
-
+$httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
-
-// =====================================================
-// 9. ERROR DE CONEXIÓN CURL
-// =====================================================
-
-if ($response === false || $curlErrorNumber !== 0) {
-
-    http_response_code(502);
-
-    echo json_encode([
-
-        'ok' => false,
-
-        'mensaje' => 'No se pudo conectar con eNext',
-
-        'http_code' => $httpCode,
-
-        'curl_error_number' => $curlErrorNumber,
-
-        'curl_error' => $curlError
-
-    ], JSON_UNESCAPED_UNICODE);
-
-    exit;
+if ($responseBody === false || $curlError !== '') {
+    error_log('PROFIRMA provider connection error: ' . $curlError);
+    fail(502, 'No fue posible conectar con el servicio de emisión. Intenta nuevamente.');
 }
 
+$result = json_decode((string)$responseBody, true);
+if (!is_array($result)) {
+    error_log('PROFIRMA provider invalid response HTTP ' . $httpCode . ': ' . substr((string)$responseBody, 0, 1000));
+    fail(502, 'El servicio de emisión devolvió una respuesta inválida.');
+}
 
-// =====================================================
-// 10. INTENTAR LEER RESPUESTA DE ENEXT
-// =====================================================
+if ($httpCode < 200 || $httpCode >= 300 || (int)($result['codigo'] ?? 0) !== 1) {
+    $providerMessage = trim((string)($result['mensaje'] ?? ''));
+    error_log('PROFIRMA provider rejected request HTTP ' . $httpCode . ': ' . $providerMessage);
+    $publicMessage = $providerMessage !== '' ? $providerMessage : 'No se pudo registrar la solicitud.';
+    fail($httpCode >= 400 && $httpCode <= 599 ? $httpCode : 502, $publicMessage);
+}
 
-$respuestaEnextJSON = json_decode($response, true);
-
-$esJSON = (
-    json_last_error() === JSON_ERROR_NONE
-);
-
-
-// =====================================================
-// 11. RESPUESTA DEBUG
-// =====================================================
-//
-// IMPORTANTE:
-// NO devolvemos password ni Authorization.
-//
-// Esto nos permitirá ver exactamente qué responde
-// eNext.
-//
+$link = trim((string)($result['link_biometria'] ?? ''));
+$token = trim((string)($result['token_biometria'] ?? ''));
+if ($link === '' || $token === '') {
+    error_log('PROFIRMA provider success response missing validation link/token.');
+    fail(502, 'La solicitud fue registrada, pero no se recibió el enlace de validación.');
+}
 
 echo json_encode([
+    'codigo' => 1,
+    'mensaje' => 'Solicitud registrada correctamente.',
+    'token_biometria' => $token,
+    'link_biometria' => $link,
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-    'ok' => ($httpCode >= 200 && $httpCode < 300),
-
-    'debug' => true,
-
-    'http_code_enext' => $httpCode,
-
-    'endpoint' => $urlEnext,
-
-    'datos_enviados' => [
-
-        'numero_tramite' => $numeroTramite,
-
-        'perfil_firma' => $perfilFirma,
-
-        'nombres' => $nombres,
-
-        'apellidos' => $apellidos,
-
-        'cedula' => $cedula,
-
-        'codigo_dactilar' => $codigoDactilar,
-
-        'correo' => $correo,
-
-        'provincia' => $provincia,
-
-        'ciudad' => $ciudad,
-
-        'direccion' => $direccion,
-
-        'celular' => $celular,
-
-        'tipo_envio' => 'EMAIL',
-
-        'tipo_clave' => 1
-    ],
-
-    'respuesta_enext_es_json' => $esJSON,
-
-    'enext_response' => $esJSON
-        ? $respuestaEnextJSON
-        : $response
-
-], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-
-exit;
-
-?>
