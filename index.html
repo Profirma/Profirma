@@ -1121,15 +1121,42 @@
         }
       }
 
+      // INTEGRACIÓN CON EL BACKEND EN RAILWAY PARA EL ENVÍO DE CORREOS Y API ENEX
       function simulatePaymentSuccess() {
         const name = document.getElementById('clientName').value || 'Cliente Registrado';
         const id = document.getElementById('clientId').value || '0000000000';
         const email = document.getElementById('clientEmail').value || 'cliente@correo.com';
+        const phone = document.getElementById('clientPhone').value || '0000000000';
+        const province = document.getElementById('clientProvince').value || 'Pichincha';
 
         document.getElementById('res-name').textContent = name;
         document.getElementById('res-id').textContent = id;
         document.getElementById('res-email').textContent = email;
         document.getElementById('res-plan').textContent = currentVigencia + ' (' + currentPrecio + ')';
+
+        // Enviar datos al backend PHP en Railway
+        fetch('https://profirma-production.up.railway.app/procesar_pago.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nombre: name,
+                cedula: id,
+                email: email,
+                telefono: phone,
+                provincia: province,
+                vigencia: currentVigencia,
+                precio: currentPrecio
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Backend procesado con éxito:', data);
+        })
+        .catch(error => {
+            console.error('Error al conectar con el backend:', error);
+        });
 
         document.getElementById('step-payment').classList.add('hidden');
         document.getElementById('step-success').classList.remove('hidden');
