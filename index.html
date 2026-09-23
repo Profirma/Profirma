@@ -1143,68 +1143,93 @@
       }
 
       // INTEGRACIÓN CON EL BACKEND EN RAILWAY PARA EL ENVÍO DE DATOS Y API ENEXT
-      function simulatePaymentSuccess() {
-        const fullName = document.getElementById('clientName').value || 'Cliente Registrado';
-        const id = document.getElementById('clientId').value || '0000000000';
-        const codigoDactilar = document.getElementById('clientCodigoDactilar').value || '';
-        const email = document.getElementById('clientEmail').value || 'cliente@correo.com';
-        const phone = document.getElementById('clientPhone').value || '0000000000';
-        const direccion = document.getElementById('clientDireccion').value || 'Sin dirección';
-        const province = document.getElementById('clientProvince').value || 'Pichincha';
+      async function simulatePaymentSuccess() {
+        const fullName = document.getElementById('clientName').value.trim();
+        const id = document.getElementById('clientId').value.trim();
+        const codigoDactilar = document.getElementById('clientCodigoDactilar').value.trim();
+        const email = document.getElementById('clientEmail').value.trim();
+        const phone = document.getElementById('clientPhone').value.trim();
+        const direccion = document.getElementById('clientDireccion').value.trim();
+        const province = document.getElementById('clientProvince').value;
 
-        // Separar nombres y apellidos para la API de eNext
-        const partes = fullName.trim().split(' ');
-        const nombres = partes[0] || '';
-        const apellidos = partes.slice(1).join(' ') || 'General';
+        if (!fullName || !id || !codigoDactilar || !email || !phone || !direccion || !province) {
+          alert('Por favor completa todos los datos de emisión.');
+          return;
+        }
 
-        document.getElementById('res-name').textContent = fullName;
-        document.getElementById('res-id').textContent = id;
-        document.getElementById('res-email').textContent = email;
-        document.getElementById('res-plan').textContent = currentVigencia + ' (' + currentPrecio + ')';
+        const partes = fullName.split(/\s+/).filter(Boolean);
+        if (partes.length < 2) {
+          alert('Ingresa al menos un nombre y un apellido.');
+          return;
+        }
 
-        // Determinar código de perfil según vigencia
-        let perfilFirma = "002"; // 1 Año por defecto
-        if (currentVigencia.includes('2')) perfilFirma = "003";
-        else if (currentVigencia.includes('3')) perfilFirma = "004";
-        else if (currentVigencia.includes('5')) perfilFirma = "005";
+        // Si se ingresan 4 o más palabras, asumimos 2 nombres + apellidos.
+        // Con 2-3 palabras conservamos el primer término como nombre y el resto como apellidos.
+        const nombres = partes.length >= 4 ? partes.slice(0, 2).join(' ') : partes[0];
+        const apellidos = partes.length >= 4 ? partes.slice(2).join(' ') : partes.slice(1).join(' ');
+
+        // Perfiles oficiales eNext para Persona Natural según la documentación suministrada.
+        const perfilesEnext = {
+          '1 Año': '002',
+          '2 Años': '005',
+          '3 Años': '010',
+          '5 Años': '013'
+        };
+        const perfilFirma = perfilesEnext[currentVigencia];
+        if (!perfilFirma) {
+          alert('No existe un perfil eNext configurado para la vigencia seleccionada.');
+          return;
+        }
 
         const datosEnvio = {
-            numero_tramite: "TRM-" + Math.floor(100000 + Math.random() * 900000),
-            perfil_firma: perfilFirma,
-            nombres: nombres,
-            apellidos: apellidos,
-            cedula: id,
-            codigo_dactilar: codigoDactilar,
-            correo: email,
-            provincia: province,
-            ciudad: province,
-            direccion: direccion,
-            celular: phone,
-            vigencia: currentVigencia,
-            precio: currentPrecio
+          numero_tramite: 'TRM-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          perfil_firma: perfilFirma,
+          nombres,
+          apellidos,
+          cedula: id,
+          codigo_dactilar: codigoDactilar,
+          correo: email,
+          provincia: province,
+          ciudad: province, // TODO: sustituir por una ciudad real cuando el formulario la solicite.
+          direccion,
+          celular: phone,
+          vigencia: currentVigencia,
+          precio: currentPrecio
         };
 
-        // Enviar datos al backend PHP en Railway
-        fetch('https://profirma-production.up.railway.app/procesar_pago.php', {
+        try {
+          const response = await fetch('https://profirma-production.up.railway.app/procesar_pago.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosEnvio)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Backend procesado con éxito:', data);
-            if (data.link_biometria) {
-                window.enextBiometriaLink = data.link_biometria;
-            }
-        })
-        .catch(error => {
-            console.error('Error al conectar con el backend:', error);
-        });
+          });
 
-        document.getElementById('step-payment').classList.add('hidden');
-        document.getElementById('step-success').classList.remove('hidden');
+          const raw = await response.text();
+          let data;
+          try { data = JSON.parse(raw); }
+          catch (_) { throw new Error('El backend no devolvió JSON válido: ' + raw.slice(0, 250)); }
+
+          console.log('Respuesta PROFIRMA/eNext:', data);
+          const enext = data.enext_response || data;
+
+          if (!response.ok || Number(enext.codigo) !== 1) {
+            throw new Error(enext.mensaje || data.mensaje || ('Solicitud rechazada (HTTP ' + response.status + ')'));
+          }
+
+          window.enextBiometriaToken = enext.token_biometria || null;
+          window.enextBiometriaLink = enext.link_biometria || null;
+
+          document.getElementById('res-name').textContent = fullName;
+          document.getElementById('res-id').textContent = id;
+          document.getElementById('res-email').textContent = email;
+          document.getElementById('res-plan').textContent = currentVigencia + ' (' + currentPrecio + ')';
+          document.getElementById('step-payment').classList.add('hidden');
+          document.getElementById('step-success').classList.remove('hidden');
+          if (window.lucide) lucide.createIcons();
+        } catch (error) {
+          console.error('Error PROFIRMA/eNext:', error);
+          alert('No se pudo crear el trámite en eNext.\n\n' + error.message);
+        }
       }
 
       function launchENextBiometrics() {
