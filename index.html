@@ -881,8 +881,8 @@
       <div id="step-form" class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
           <div>
-            <h2 class="text-2xl font-black text-brand-navy">Paso 2: Datos de Emisión</h2>
-            <p class="text-xs font-medium text-slate-500 mt-0.5">Se utilizarán para el certificado .p12 y la factura.</p>
+            <h2 class="text-2xl font-black text-brand-navy">Datos para tu Firma Electrónica</h2>
+            <p class="text-xs font-medium text-slate-500 mt-0.5">Completa tus datos para iniciar la solicitud de prueba.</p>
           </div>
           <div class="bg-amber-50 border border-amber-200/60 px-4 py-2 rounded-2xl text-right self-start sm:self-auto">
             <span class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider">PLAN SELECCIONADO</span>
@@ -891,18 +891,27 @@
         </div>
 
         <form id="clientDataForm" onsubmit="event.preventDefault(); processClientData();" class="space-y-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nombres y Apellidos Completos *</label>
-            <div class="relative">
-              <i data-lucide="user" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
-              <input type="text" id="clientName" required placeholder="Ej. Carlos Alfredo Mendoza Paredes" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nombres *</label>
+              <div class="relative">
+                <i data-lucide="user" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
+                <input type="text" id="clientNombres" required autocomplete="given-name" placeholder="Ej. Carlos Alfredo" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Apellidos *</label>
+              <div class="relative">
+                <i data-lucide="user-round" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
+                <input type="text" id="clientApellidos" required autocomplete="family-name" placeholder="Ej. Mendoza Paredes" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
+              </div>
             </div>
           </div>
 
           <!-- Cédula y Código Dactilar -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Cédula o RUC *</label>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Cédula *</label>
               <div class="relative">
                 <i data-lucide="credit-card" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
                 <input type="text" id="clientId" required placeholder="1712345678" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
@@ -945,141 +954,66 @@
             </div>
           </div>
 
-          <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Provincia de Residencia *</label>
-            <select id="clientProvince" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-              <option value="Pichincha">Pichincha</option>
-              <option value="Guayas">Guayas</option>
-              <option value="Azuay">Azuay</option>
-              <option value="Manabí">Manabí</option>
-              <option value="Los Ríos">Los Ríos</option>
-              <option value="El Oro">El Oro</option>
-              <option value="Tungurahua">Tungurahua</option>
-              <option value="Otra Provincia">Otra Provincia</option>
-            </select>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Provincia *</label>
+              <select id="clientProvince" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
+                <option value="">Selecciona</option>
+                <option value="Azuay">Azuay</option><option value="Bolívar">Bolívar</option><option value="Cañar">Cañar</option><option value="Carchi">Carchi</option>
+                <option value="Chimborazo">Chimborazo</option><option value="Cotopaxi">Cotopaxi</option><option value="El Oro">El Oro</option><option value="Esmeraldas">Esmeraldas</option>
+                <option value="Galápagos">Galápagos</option><option value="Guayas">Guayas</option><option value="Imbabura">Imbabura</option><option value="Loja">Loja</option>
+                <option value="Los Ríos">Los Ríos</option><option value="Manabí">Manabí</option><option value="Morona Santiago">Morona Santiago</option><option value="Napo">Napo</option>
+                <option value="Orellana">Orellana</option><option value="Pastaza">Pastaza</option><option value="Pichincha">Pichincha</option><option value="Santa Elena">Santa Elena</option>
+                <option value="Santo Domingo de los Tsáchilas">Santo Domingo de los Tsáchilas</option><option value="Sucumbíos">Sucumbíos</option><option value="Tungurahua">Tungurahua</option><option value="Zamora Chinchipe">Zamora Chinchipe</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Ciudad *</label>
+              <input type="text" id="clientCiudad" required placeholder="Ej. Quito" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Parroquia *</label>
+              <input type="text" id="clientParroquia" required placeholder="Ej. Iñaquito" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
+            </div>
           </div>
 
           <div class="flex items-center gap-3 pt-4">
             <button type="button" onclick="window.parent.postMessage({type:'PROFIRMA_CLOSE_FLOW'}, '*')" class="w-1/3 py-3.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all text-sm">Atrás</button>
             <button type="submit" class="w-2/3 py-3.5 px-4 bg-brand-navy hover:bg-brand-navyDark text-white font-bold rounded-xl shadow-lg transition-all text-sm flex items-center justify-center gap-2">
-              <span>Continuar al Pago</span>
+              <span>Continuar con mi Solicitud</span>
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
           </div>
         </form>
       </div>
 
-      <!-- PASO 3: SELECCIONA MÉTODO DE PAGO -->
-      <div id="step-payment" class="hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80">
-        <div class="text-center mb-6">
-          <h2 class="text-2xl font-black text-brand-navy">Paso 3: Selecciona Método de Pago</h2>
-          <p class="text-xs text-slate-500 mt-1">Monto total a pagar por firma electrónica de <span id="payment-plan-text" class="font-bold">1 Año</span>:</p>
-          <div id="payment-price-display" class="text-4xl font-black text-amber-600 mt-2">$20 USD</div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-6 bg-slate-100 p-1.5 rounded-2xl">
-          <button type="button" id="tab-deuna" onclick="switchTab('deuna')" class="py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white text-brand-navy shadow-sm">
-            <i data-lucide="qr-code" class="w-4 h-4 text-amber-500"></i> Deuna! (QR)
-          </button>
-          <button type="button" id="tab-card" onclick="switchTab('card')" class="py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all text-slate-500 hover:text-brand-navy">
-            <i data-lucide="credit-card" class="w-4 h-4"></i> Tarjeta Débito/Crédito
-          </button>
-        </div>
-
-        <!-- DEUNA QR -->
-        <div id="content-deuna" class="border border-amber-200 bg-amber-50/40 rounded-2xl p-6 text-center space-y-4">
-          <div class="inline-block bg-amber-500 text-white font-black text-xs px-4 py-1.5 rounded-full uppercase tracking-wider">
-            BANCO PICHINCHA / DEUNA!
-          </div>
-          <p class="text-xs text-slate-600 max-w-md mx-auto">
-            Abre tu app <strong>Deuna!</strong> o <strong>Banco Pichincha</strong>, escanea este código QR y confirma la transferencia por <strong id="deuna-amount">$20 USD</strong>.
-          </p>
-
-          <div class="w-56 h-56 bg-white p-3 rounded-2xl mx-auto shadow-md border border-amber-100 flex flex-col items-center justify-center relative group cursor-pointer" onclick="simulatePaymentSuccess()">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PROFIRMA-ECUADOR-PAGO-DIRECTO" alt="Código QR Deuna" class="w-full h-full object-contain">
-            <div class="absolute inset-0 bg-brand-navy/80 rounded-2xl flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity p-2">
-              <i data-lucide="check-circle-2" class="w-8 h-8 text-emerald-400 mb-1"></i>
-              <span class="text-xs font-bold">Simular Pago Aprobado</span>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-center gap-2 text-xs text-amber-700 font-semibold animate-pulse">
-            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 animate-spin"></i> Escaneando pago en tiempo real...
-          </div>
-        </div>
-
-        <!-- PAYPHONE CARD -->
-        <div id="content-card" class="hidden border border-slate-200 bg-slate-50/50 rounded-2xl p-6 space-y-4">
-          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">PASARELA DE PAGO SEGURA (PAYPHONE)</span>
-            <div class="flex gap-1.5 text-xs font-bold text-slate-400">
-              <span class="bg-white px-2 py-0.5 rounded border border-slate-200">VISA</span>
-              <span class="bg-white px-2 py-0.5 rounded border border-slate-200">Mastercard</span>
-              <span class="bg-white px-2 py-0.5 rounded border border-slate-200">Diners</span>
-            </div>
-          </div>
-
-          <form onsubmit="event.preventDefault(); simulatePaymentSuccess();" class="space-y-3">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">NÚMERO DE TARJETA</label>
-              <input type="text" required placeholder="4500 •••• •••• 8892" class="w-full p-2.5 bg-white border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-navy">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">EXPIRA (MM/AA)</label>
-                <input type="text" required placeholder="11/28" class="w-full p-2.5 bg-white border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-navy">
-              </div>
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">CVC / CVC2</label>
-                <input type="password" required maxlength="4" placeholder="123" class="w-full p-2.5 bg-white border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-navy">
-              </div>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">NOMBRE EN LA TARJETA</label>
-              <input type="text" required placeholder="Como figura en la tarjeta" class="w-full p-2.5 bg-white border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-navy">
-            </div>
-
-            <button type="submit" class="w-full mt-2 py-3.5 bg-brand-navy hover:bg-brand-navyDark text-white font-bold rounded-xl shadow-lg transition-all text-sm flex items-center justify-center gap-2">
-              <i data-lucide="lock" class="w-4 h-4"></i>
-              <span>PAGAR <span id="pay-button-amount">$20 USD</span> DE FORMA SEGURA</span>
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-6 text-center">
-          <button type="button" onclick="backToStepForm()" class="text-xs font-bold text-slate-500 hover:text-brand-navy transition-colors">
-            ← Modificar Datos de Emisión
-          </button>
-        </div>
-      </div>
-
-      <!-- PASO 4: CONFIRMACIÓN Y BIOMETRÍA -->
+      <!-- PASO 3: CONFIRMACIÓN Y VALIDACIÓN -->
       <div id="step-success" class="hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80 text-center space-y-6">
         <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
           <i data-lucide="check" class="w-10 h-10 stroke-[3]"></i>
         </div>
 
         <div>
-          <h2 class="text-3xl font-black text-brand-navy">¡Pago Confirmado con Éxito!</h2>
-          <p class="text-xs font-bold text-slate-400 mt-1 uppercase tracking-wider">Transacción ID: #PF-99204-EC</p>
+          <h2 class="text-3xl font-black text-brand-navy">¡Solicitud Registrada!</h2>
+          <p class="text-xs font-bold text-slate-400 mt-1 uppercase tracking-wider">Tu solicitud fue recibida correctamente</p>
         </div>
 
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-left text-xs space-y-2.5 max-w-md mx-auto">
           <div class="flex justify-between"><span class="text-slate-500 font-semibold">Cliente:</span><span id="res-name" class="font-bold text-slate-800">---</span></div>
-          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Cédula/RUC:</span><span id="res-id" class="font-bold text-slate-800">---</span></div>
+          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Cédula:</span><span id="res-id" class="font-bold text-slate-800">---</span></div>
           <div class="flex justify-between"><span class="text-slate-500 font-semibold">Plan Firma:</span><span id="res-plan" class="font-bold text-slate-800">---</span></div>
-          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Estado de Pago:</span><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold uppercase text-[10px]">APROBADO</span></div>
+          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Estado:</span><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold uppercase text-[10px]">SOLICITUD CREADA</span></div>
         </div>
 
         <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-xs text-amber-900 text-left flex items-start gap-3">
           <i data-lucide="lock" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
           <div>
             <strong class="block font-bold">Paso Final Desbloqueado:</strong>
-            Se ha enviado un correo con las instrucciones a <strong id="res-email" class="underline">---</strong>. También puedes completar la verificación biométrica de identidad mediante el sistema eNext a continuación para emitir tu certificado.
+            Se ha enviado un correo con las instrucciones a <strong id="res-email" class="underline">---</strong>. También puedes completar la verificación biométrica de identidad desde el siguiente botón para continuar con la emisión de tu certificado.
           </div>
         </div>
 
-        <button type="button" onclick="launchENextBiometrics()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl shadow-lg transition-all text-base flex items-center justify-center gap-2">
+        <button type="button" onclick="launchValidation()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl shadow-lg transition-all text-base flex items-center justify-center gap-2">
           <i data-lucide="scan-face" class="w-5 h-5"></i>
           <span>REALIZAR VERIFICACIÓN BIOMÉTRICA AHORA</span>
         </button>
@@ -1114,129 +1048,124 @@
       });
 
       function processClientData() {
-        document.getElementById('step-form').classList.add('hidden');
-        document.getElementById('step-payment').classList.remove('hidden');
-      }
-
-      function backToStepForm() {
-        document.getElementById('step-payment').classList.add('hidden');
-        document.getElementById('step-form').classList.remove('hidden');
-      }
-
-      function switchTab(tab) {
-        const btnDeuna = document.getElementById('tab-deuna');
-        const btnCard = document.getElementById('tab-card');
-        const contentDeuna = document.getElementById('content-deuna');
-        const contentCard = document.getElementById('content-card');
-
-        if (tab === 'deuna') {
-          btnDeuna.className = 'py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white text-brand-navy shadow-sm';
-          btnCard.className = 'py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all text-slate-500 hover:text-brand-navy';
-          contentDeuna.classList.remove('hidden');
-          contentCard.classList.add('hidden');
-        } else {
-          btnCard.className = 'py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white text-brand-navy shadow-sm';
-          btnDeuna.className = 'py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all text-slate-500 hover:text-brand-navy';
-          contentCard.classList.remove('hidden');
-          contentDeuna.classList.add('hidden');
+        const form = document.getElementById('clientDataForm');
+        if (!form || !form.checkValidity()) {
+          if (form) form.reportValidity();
+          return;
         }
+        submitFirmaPrueba();
       }
 
-      // INTEGRACIÓN CON EL BACKEND EN RAILWAY PARA EL ENVÍO DE DATOS Y API ENEXT
-      async function simulatePaymentSuccess() {
-        const fullName = document.getElementById('clientName').value.trim();
+      // INTEGRACIÓN CON EL BACKEND EN RAILWAY PARA EL ENVÍO DE DATOS Y API PROFIRMA
+      let requestInProgress = false;
+
+      async function submitFirmaPrueba() {
+        if (requestInProgress) return;
+
+        const nombres = document.getElementById('clientNombres').value.trim();
+        const apellidos = document.getElementById('clientApellidos').value.trim();
         const id = document.getElementById('clientId').value.trim();
         const codigoDactilar = document.getElementById('clientCodigoDactilar').value.trim();
         const email = document.getElementById('clientEmail').value.trim();
         const phone = document.getElementById('clientPhone').value.trim();
         const direccion = document.getElementById('clientDireccion').value.trim();
-        const province = document.getElementById('clientProvince').value;
+        const province = document.getElementById('clientProvince').value.trim();
+        const ciudad = document.getElementById('clientCiudad').value.trim();
+        const parroquia = document.getElementById('clientParroquia').value.trim();
 
-        if (!fullName || !id || !codigoDactilar || !email || !phone || !direccion || !province) {
-          alert('Por favor completa todos los datos de emisión.');
+        if (!nombres || !apellidos || !id || !codigoDactilar || !email || !phone || !direccion || !province || !ciudad || !parroquia) {
+          alert('Completa todos los datos de emisión antes de continuar.');
+          return;
+        }
+        if (!/^[0-9]{10}$/.test(id)) {
+          alert('Para Persona Natural, ingresa una cédula de 10 dígitos.');
+          return;
+        }
+        if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+          alert('Ingresa un correo electrónico válido.');
           return;
         }
 
-        const partes = fullName.split(/\s+/).filter(Boolean);
-        if (partes.length < 2) {
-          alert('Ingresa al menos un nombre y un apellido.');
-          return;
-        }
-
-        // Si se ingresan 4 o más palabras, asumimos 2 nombres + apellidos.
-        // Con 2-3 palabras conservamos el primer término como nombre y el resto como apellidos.
-        const nombres = partes.length >= 4 ? partes.slice(0, 2).join(' ') : partes[0];
-        const apellidos = partes.length >= 4 ? partes.slice(2).join(' ') : partes.slice(1).join(' ');
-
-        // Perfiles oficiales eNext para Persona Natural según la documentación suministrada.
-        const perfilesEnext = {
+        const perfilesPROFIRMA = {
           '1 Año': '002',
           '2 Años': '005',
           '3 Años': '010',
           '5 Años': '013'
         };
-        const perfilFirma = perfilesEnext[currentVigencia];
+        const perfilFirma = perfilesPROFIRMA[currentVigencia];
         if (!perfilFirma) {
-          alert('No existe un perfil eNext configurado para la vigencia seleccionada.');
+          alert('La vigencia seleccionada no está disponible.');
           return;
         }
 
         const datosEnvio = {
-          numero_tramite: 'TRM-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          numero_tramite: 'PF-' + Date.now() + '-' + Math.floor(1000 + Math.random() * 9000),
           perfil_firma: perfilFirma,
-          nombres,
-          apellidos,
+          nombres: nombres,
+          apellidos: apellidos,
           cedula: id,
           codigo_dactilar: codigoDactilar,
           correo: email,
           provincia: province,
-          ciudad: province, // TODO: sustituir por una ciudad real cuando el formulario la solicite.
-          direccion,
+          ciudad: ciudad,
+          parroquia: parroquia,
+          direccion: direccion,
           celular: phone,
+          tipo_envio: 'EMAIL',
+          tipo_clave: 1,
           vigencia: currentVigencia,
           precio: currentPrecio
         };
 
+        requestInProgress = true;
+        console.log('Solicitud enviada a PROFIRMA');
+
         try {
-          const response = await fetch('https://profirma-production.up.railway.app/procesar_pago.php', {
+          const response = await fetch('/procesar_pago.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(datosEnvio)
           });
 
           const raw = await response.text();
           let data;
           try { data = JSON.parse(raw); }
-          catch (_) { throw new Error('El backend no devolvió JSON válido: ' + raw.slice(0, 250)); }
+          catch (_) { throw new Error('El backend no devolvió JSON válido. Respuesta: ' + raw.slice(0, 300)); }
 
-          console.log('Respuesta PROFIRMA/eNext:', data);
-          const enext = data.enext_response || data;
+          console.log('Respuesta de PROFIRMA:', data);
+          const result = data;
+          const codigo = Number(result && result.codigo);
 
-          if (!response.ok || Number(enext.codigo) !== 1) {
-            throw new Error(enext.mensaje || data.mensaje || ('Solicitud rechazada (HTTP ' + response.status + ')'));
+          if (!response.ok || codigo !== 1) {
+            const mensaje = (result && result.mensaje) || ('Error HTTP ' + response.status);
+            throw new Error(mensaje);
           }
 
-          window.enextBiometriaToken = enext.token_biometria || null;
-          window.enextBiometriaLink = enext.link_biometria || null;
+          window.validationLink = result.link_biometria || '';
+          window.validationToken = result.token_biometria || '';
 
+          const fullName = nombres + ' ' + apellidos;
           document.getElementById('res-name').textContent = fullName;
           document.getElementById('res-id').textContent = id;
           document.getElementById('res-email').textContent = email;
           document.getElementById('res-plan').textContent = currentVigencia + ' (' + currentPrecio + ')';
-          document.getElementById('step-payment').classList.add('hidden');
+          document.getElementById('step-form').classList.add('hidden');
           document.getElementById('step-success').classList.remove('hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           if (window.lucide) lucide.createIcons();
         } catch (error) {
-          console.error('Error PROFIRMA/eNext:', error);
-          alert('No se pudo crear el trámite en eNext.\n\n' + error.message);
+          console.error('No se pudo crear la solicitud:', error);
+          alert('No pudimos crear la solicitud.\\n\\n' + error.message);
+        } finally {
+          requestInProgress = false;
         }
       }
 
-      function launchENextBiometrics() {
-        if (window.enextBiometriaLink) {
-            window.location.href = window.enextBiometriaLink;
+      function launchValidation() {
+        if (window.validationLink) {
+            window.location.href = window.validationLink;
         } else {
-            alert('Redirigiendo a la plataforma oficial de verificación biométrica eNext...');
+            alert('Todavía no existe un enlace de validación disponible.');
         }
       }
 
