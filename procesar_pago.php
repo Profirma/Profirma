@@ -113,7 +113,6 @@ $required = [
     'celular'
 ];
 
-
 foreach ($required as $field) {
 
     if (
@@ -123,8 +122,7 @@ foreach ($required as $field) {
 
         responder(422, [
             'codigo' => 0,
-            'mensaje' =>
-                'Falta el campo requerido: ' . $field . '.'
+            'mensaje' => 'Falta el campo requerido: ' . $field . '.'
         ]);
     }
 }
@@ -167,8 +165,7 @@ if (!preg_match('/^\d{10}$/', $cedula)) {
 
     responder(422, [
         'codigo' => 0,
-        'mensaje' =>
-            'La cédula debe tener 10 dígitos.'
+        'mensaje' => 'La cédula debe tener 10 dígitos.'
     ]);
 }
 
@@ -184,8 +181,7 @@ if (!filter_var(
 
     responder(422, [
         'codigo' => 0,
-        'mensaje' =>
-            'El correo electrónico no es válido.'
+        'mensaje' => 'El correo electrónico no es válido.'
     ]);
 }
 
@@ -206,7 +202,6 @@ $perfilesPermitidos = [
     '013'
 ];
 
-
 if (!in_array(
     $perfil,
     $perfilesPermitidos,
@@ -215,8 +210,7 @@ if (!in_array(
 
     responder(422, [
         'codigo' => 0,
-        'mensaje' =>
-            'El perfil de firma seleccionado no está permitido.'
+        'mensaje' => 'El perfil de firma seleccionado no está permitido.'
     ]);
 }
 
@@ -232,7 +226,7 @@ $payload = [
 
     /*
      * CREDENCIALES DEL SOCIO
-     * Estas viajan DENTRO del JSON.
+     * Estas viajan dentro del JSON.
      */
 
     'usuario' =>
@@ -292,13 +286,11 @@ $jsonPayload = json_encode(
     JSON_UNESCAPED_SLASHES
 );
 
-
 if ($jsonPayload === false) {
 
     responder(500, [
         'codigo' => 0,
-        'mensaje' =>
-            'No se pudo preparar la solicitud para eNext.'
+        'mensaje' => 'No se pudo preparar la solicitud para eNext.'
     ]);
 }
 
@@ -308,7 +300,6 @@ if ($jsonPayload === false) {
    ========================================================= */
 
 $ch = curl_init($apiUrl);
-
 
 curl_setopt_array($ch, [
 
@@ -378,8 +369,7 @@ if (
 
     responder(502, [
         'codigo' => 0,
-        'mensaje' =>
-            'No fue posible conectar con el servicio de eNext.'
+        'mensaje' => 'No fue posible conectar con el servicio de eNext.'
     ]);
 }
 
@@ -388,11 +378,53 @@ if (
    15. DECODIFICAR RESPUESTA ENEXT
    ========================================================= */
 
+/*
+ * eNext puede anteponer avisos HTML/PHP antes del JSON.
+ *
+ * Primero intentamos decodificar normalmente.
+ * Si falla, localizamos el inicio del objeto JSON
+ * y procesamos únicamente esa parte.
+ */
+
+$responseText = trim((string)$responseBody);
+
 $result = json_decode(
-    (string)$responseBody,
+    $responseText,
     true
 );
 
+
+/*
+ * Si existe contenido antes del JSON,
+ * buscar el primer carácter {
+ */
+
+if (!is_array($result)) {
+
+    $jsonStart = strpos(
+        $responseText,
+        '{'
+    );
+
+    if ($jsonStart !== false) {
+
+        $jsonOnly = substr(
+            $responseText,
+            $jsonStart
+        );
+
+        $result = json_decode(
+            $jsonOnly,
+            true
+        );
+    }
+}
+
+
+/*
+ * Si todavía no tenemos un JSON válido,
+ * registrar el problema en Railway.
+ */
 
 if (!is_array($result)) {
 
@@ -400,13 +432,12 @@ if (!is_array($result)) {
         'PROFIRMA / eNext respuesta no JSON. HTTP ' .
         $httpCode .
         ' - ' .
-        substr((string)$responseBody, 0, 1000)
+        substr($responseText, 0, 1000)
     );
 
     responder(502, [
         'codigo' => 0,
-        'mensaje' =>
-            'eNext devolvió una respuesta inválida.'
+        'mensaje' => 'eNext devolvió una respuesta inválida.'
     ]);
 }
 
