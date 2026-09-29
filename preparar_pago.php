@@ -5,8 +5,8 @@ declare(strict_types=1);
 |--------------------------------------------------------------------------
 | PROFIRMA - PREPARAR PAGO PAYPHONE
 |--------------------------------------------------------------------------
-| Persona Natural  = $16 USD
-| Persona Jurídica = $20 USD
+| Precios calculados por tipo de persona y vigencia.
+| El servidor determina siempre el monto real a cobrar.
 |
 | Flujo:
 | 1. Recibe los datos de PROFIRMA.
@@ -180,13 +180,11 @@ if (
 
     $tipoPersona = 'juridica';
     $nombreTipo = 'Persona Jurídica';
-    $montoCentavos = 2000;
 
 } else {
 
     $tipoPersona = 'natural';
     $nombreTipo = 'Persona Natural';
-    $montoCentavos = 1600;
 }
 
 
@@ -202,17 +200,55 @@ $vigencia = trim((string) (
     ?? '1 Año'
 ));
 
+/*
+|--------------------------------------------------------------------------
+| PLANES PERSONA NATURAL
+|--------------------------------------------------------------------------
+|
+| 7 Días  = $8
+| 15 Días = $8
+| 1 Mes   = $12
+| 1 Año   = $20
+| 2 Años  = $30
+| 3 Años  = $40
+| 4 Años  = $50
+| 5 Años  = $55
+|
+| IMPORTANTE:
+| Persona Natural NO tiene plan de 6 meses.
+|
+*/
+
 $vigenciasNatural = [
     '7 Días',
     '15 Días',
     '1 Mes',
-    '6 Meses',
     '1 Año',
     '2 Años',
     '3 Años',
     '4 Años',
     '5 Años'
 ];
+
+
+/*
+|--------------------------------------------------------------------------
+| PLANES PERSONA JURÍDICA
+|--------------------------------------------------------------------------
+|
+| 15 Días = $8
+| 1 Mes   = $12
+| 6 Meses = $15
+| 1 Año   = $20
+| 2 Años  = $30
+| 3 Años  = $40
+| 4 Años  = $50
+| 5 Años  = $55
+|
+| IMPORTANTE:
+| Persona Jurídica NO tiene plan de 7 días.
+|
+*/
 
 $vigenciasJuridica = [
     '15 Días',
@@ -225,17 +261,117 @@ $vigenciasJuridica = [
     '5 Años'
 ];
 
+
 $vigenciasPermitidas =
     $tipoPersona === 'juridica'
         ? $vigenciasJuridica
         : $vigenciasNatural;
 
+
 if (!in_array($vigencia, $vigenciasPermitidas, true)) {
+
     responder(400, [
         'ok' => false,
         'message' => 'La vigencia seleccionada no es válida.'
     ]);
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| PRECIO SEGÚN TIPO DE PERSONA Y VIGENCIA
+|--------------------------------------------------------------------------
+|
+| Todos los valores están expresados en CENTAVOS.
+|
+| 800  = $8.00
+| 1200 = $12.00
+| 1500 = $15.00
+| 2000 = $20.00
+| 3000 = $30.00
+| 4000 = $40.00
+| 5000 = $50.00
+| 5500 = $55.00
+|
+| IMPORTANTE:
+| NO confiamos en el precio que venga desde el navegador.
+| El servidor determina el precio real.
+|
+*/
+
+$preciosNatural = [
+
+    '7 Días' =>
+        800,
+
+    '15 Días' =>
+        800,
+
+    '1 Mes' =>
+        1200,
+
+    '1 Año' =>
+        2000,
+
+    '2 Años' =>
+        3000,
+
+    '3 Años' =>
+        4000,
+
+    '4 Años' =>
+        5000,
+
+    '5 Años' =>
+        5500
+];
+
+
+$preciosJuridica = [
+
+    '15 Días' =>
+        800,
+
+    '1 Mes' =>
+        1200,
+
+    '6 Meses' =>
+        1500,
+
+    '1 Año' =>
+        2000,
+
+    '2 Años' =>
+        3000,
+
+    '3 Años' =>
+        4000,
+
+    '4 Años' =>
+        5000,
+
+    '5 Años' =>
+        5500
+];
+
+
+$tablaPrecios =
+    $tipoPersona === 'juridica'
+        ? $preciosJuridica
+        : $preciosNatural;
+
+
+if (!isset($tablaPrecios[$vigencia])) {
+
+    responder(400, [
+        'ok' => false,
+        'message' =>
+            'No existe un precio configurado para la vigencia seleccionada.'
+    ]);
+}
+
+
+$montoCentavos = $tablaPrecios[$vigencia];
 
 
 /*
@@ -276,7 +412,9 @@ $documento = trim((string) (
     ?? ''
 ));
 
+
 if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
     responder(400, [
         'ok' => false,
         'message' => 'El correo electrónico no es válido.'
@@ -292,14 +430,25 @@ if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 try {
 
-    $random = strtoupper(bin2hex(random_bytes(4)));
+    $random = strtoupper(
+        bin2hex(
+            random_bytes(4)
+        )
+    );
 
 } catch (Throwable $e) {
 
     $random = strtoupper(
-        substr(md5(uniqid('', true)), 0, 8)
+        substr(
+            md5(
+                uniqid('', true)
+            ),
+            0,
+            8
+        )
     );
 }
+
 
 $clientTransactionId =
     'PF-' .
@@ -314,6 +463,7 @@ $clientTransactionId =
 |--------------------------------------------------------------------------
 |
 | Guardamos el JSON completo recibido desde PROFIRMA.
+|
 | NO ejecutamos eNext todavía.
 |
 |--------------------------------------------------------------------------
@@ -321,20 +471,24 @@ $clientTransactionId =
 
 $datosSolicitud = $datos;
 
-$datosSolicitud['tipoPersona'] = $tipoPersona;
-$datosSolicitud['vigencia'] = $vigencia;
+$datosSolicitud['tipoPersona'] =
+    $tipoPersona;
+
+$datosSolicitud['vigencia'] =
+    $vigencia;
+
 
 /*
 |--------------------------------------------------------------------------
 | PRECIO REAL DEL SERVIDOR
 |--------------------------------------------------------------------------
-|
-| No confiamos en el precio enviado por el navegador.
-|
 */
 
-$datosSolicitud['monto_centavos'] = $montoCentavos;
-$datosSolicitud['currency'] = 'USD';
+$datosSolicitud['monto_centavos'] =
+    $montoCentavos;
+
+$datosSolicitud['currency'] =
+    'USD';
 
 
 $jsonSolicitud = json_encode(
@@ -343,11 +497,13 @@ $jsonSolicitud = json_encode(
     JSON_UNESCAPED_SLASHES
 );
 
+
 if ($jsonSolicitud === false) {
 
     responder(500, [
         'ok' => false,
-        'message' => 'No se pudieron preparar los datos de la solicitud.'
+        'message' =>
+            'No se pudieron preparar los datos de la solicitud.'
     ]);
 }
 
@@ -384,16 +540,22 @@ try {
     $stmt = $pdo->prepare($sql);
 
     $stmt->execute([
-        ':client_transaction_id' => $clientTransactionId,
-        ':monto_centavos' => $montoCentavos,
-        ':datos_solicitud' => $jsonSolicitud
+        ':client_transaction_id' =>
+            $clientTransactionId,
+
+        ':monto_centavos' =>
+            $montoCentavos,
+
+        ':datos_solicitud' =>
+            $jsonSolicitud
     ]);
 
 } catch (Throwable $e) {
 
     responder(500, [
         'ok' => false,
-        'message' => 'No se pudo registrar la solicitud antes del pago.'
+        'message' =>
+            'No se pudo registrar la solicitud antes del pago.'
     ]);
 }
 
@@ -432,17 +594,23 @@ $cancellationUrl =
 
 $payphoneData = [
 
-    'amount' => $montoCentavos,
+    'amount' =>
+        $montoCentavos,
 
-    'amountWithoutTax' => $montoCentavos,
+    'amountWithoutTax' =>
+        $montoCentavos,
 
-    'amountWithTax' => 0,
+    'amountWithTax' =>
+        0,
 
-    'tax' => 0,
+    'tax' =>
+        0,
 
-    'service' => 0,
+    'service' =>
+        0,
 
-    'tip' => 0,
+    'tip' =>
+        0,
 
     'clientTransactionId' =>
         $clientTransactionId,
@@ -474,7 +642,9 @@ $payphoneData = [
 */
 
 if ($email !== '') {
-    $payphoneData['email'] = $email;
+
+    $payphoneData['email'] =
+        $email;
 }
 
 
@@ -490,6 +660,7 @@ $jsonPayphone = json_encode(
     JSON_UNESCAPED_SLASHES
 );
 
+
 if ($jsonPayphone === false) {
 
     try {
@@ -504,8 +675,10 @@ if ($jsonPayphone === false) {
         ");
 
         $stmt->execute([
+
             ':error' =>
                 'No se pudo construir la solicitud PayPhone.',
+
             ':id' =>
                 $clientTransactionId
         ]);
@@ -513,8 +686,12 @@ if ($jsonPayphone === false) {
     } catch (Throwable $ignored) {
     }
 
+
     responder(500, [
-        'ok' => false,
+
+        'ok' =>
+            false,
+
         'message' =>
             'No se pudo preparar la información del pago.'
     ]);
@@ -529,10 +706,14 @@ if ($jsonPayphone === false) {
 
 $curl = curl_init();
 
+
 if ($curl === false) {
 
     responder(500, [
-        'ok' => false,
+
+        'ok' =>
+            false,
+
         'message' =>
             'No se pudo iniciar la conexión con PayPhone.'
     ]);
@@ -551,8 +732,12 @@ curl_setopt_array($curl, [
         $jsonPayphone,
 
     CURLOPT_HTTPHEADER => [
-        'Authorization: Bearer ' . $payphoneToken,
+
+        'Authorization: Bearer ' .
+            $payphoneToken,
+
         'Content-Type: application/json',
+
         'Accept: application/json'
     ],
 
@@ -570,14 +755,17 @@ curl_setopt_array($curl, [
 ]);
 
 
-$respuestaPayphone = curl_exec($curl);
+$respuestaPayphone =
+    curl_exec($curl);
 
-$curlError = curl_error($curl);
+$curlError =
+    curl_error($curl);
 
-$httpCode = (int) curl_getinfo(
-    $curl,
-    CURLINFO_HTTP_CODE
-);
+$httpCode =
+    (int) curl_getinfo(
+        $curl,
+        CURLINFO_HTTP_CODE
+    );
 
 curl_close($curl);
 
@@ -602,6 +790,7 @@ if ($respuestaPayphone === false) {
         ");
 
         $stmt->execute([
+
             ':error' =>
                 'Error de conexión con PayPhone: ' .
                 $curlError,
@@ -616,7 +805,8 @@ if ($respuestaPayphone === false) {
 
     responder(502, [
 
-        'ok' => false,
+        'ok' =>
+            false,
 
         'message' =>
             'No fue posible conectar con PayPhone.',
@@ -662,6 +852,7 @@ if (!is_array($resultado)) {
         ");
 
         $stmt->execute([
+
             ':error' =>
                 'PayPhone devolvió una respuesta no válida.',
 
@@ -673,19 +864,10 @@ if (!is_array($resultado)) {
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | DIAGNÓSTICO TEMPORAL
-    |--------------------------------------------------------------------------
-    |
-    | Mostramos parte de la respuesta para saber qué está devolviendo
-    | PayPhone.
-    |
-    */
-
     responder(502, [
 
-        'ok' => false,
+        'ok' =>
+            false,
 
         'message' =>
             'PayPhone devolvió una respuesta que no pudo ser procesada.',
@@ -720,12 +902,6 @@ if ($httpCode < 200 || $httpCode >= 300) {
         ?? 'PayPhone rechazó la preparación de la transacción.';
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | GUARDAR ERROR EN POSTGRESQL
-    |--------------------------------------------------------------------------
-    */
-
     try {
 
         $errorParaGuardar =
@@ -735,10 +911,13 @@ if ($httpCode < 200 || $httpCode >= 300) {
                 JSON_UNESCAPED_SLASHES
             );
 
+
         if ($errorParaGuardar === false) {
+
             $errorParaGuardar =
                 (string) $mensajePayphone;
         }
+
 
         $stmt = $pdo->prepare("
             UPDATE solicitudes
@@ -749,7 +928,9 @@ if ($httpCode < 200 || $httpCode >= 300) {
             WHERE client_transaction_id = :id
         ");
 
+
         $stmt->execute([
+
             ':error' =>
                 $errorParaGuardar,
 
@@ -760,18 +941,6 @@ if ($httpCode < 200 || $httpCode >= 300) {
     } catch (Throwable $ignored) {
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | DIAGNÓSTICO TEMPORAL PAYPHONE
-    |--------------------------------------------------------------------------
-    |
-    | Esto nos permitirá ver EXACTAMENTE qué está rechazando PayPhone.
-    |
-    | IMPORTANTE:
-    | NO mostramos el token ni las credenciales.
-    |
-    */
 
     responder(502, [
 
@@ -811,15 +980,22 @@ if ($httpCode < 200 || $httpCode >= 300) {
 
 $payWithCard =
     isset($resultado['payWithCard'])
-        ? trim((string) $resultado['payWithCard'])
+        ? trim(
+            (string) $resultado['payWithCard']
+        )
         : '';
+
 
 $payWithPayPhone =
     isset($resultado['payWithPayPhone'])
-        ? trim((string) $resultado['payWithPayPhone'])
+        ? trim(
+            (string) $resultado['payWithPayPhone']
+        )
         : '';
 
+
 $paymentUrl = '';
+
 
 if ($payWithCard !== '') {
 
@@ -852,7 +1028,9 @@ if ($paymentUrl === '') {
             WHERE client_transaction_id = :id
         ");
 
+
         $stmt->execute([
+
             ':error' =>
                 'PayPhone no devolvió una URL de pago.',
 
@@ -892,7 +1070,9 @@ if ($paymentUrl === '') {
 
 $paymentId =
     isset($resultado['paymentId'])
-        ? trim((string) $resultado['paymentId'])
+        ? trim(
+            (string) $resultado['paymentId']
+        )
         : null;
 
 
@@ -914,7 +1094,9 @@ if ($paymentId !== null && $paymentId !== '') {
             WHERE client_transaction_id = :id
         ");
 
+
         $stmt->execute([
+
             ':payment_id' =>
                 $paymentId,
 
@@ -933,7 +1115,6 @@ if ($paymentId !== null && $paymentId !== '') {
         | paymentId.
         |
         */
-
     }
 }
 
