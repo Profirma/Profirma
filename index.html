@@ -589,6 +589,7 @@
                 </div>
 
                 <div class="vigencia-selector">
+                    <button type="button" class="vigencia-btn active" onclick="selectVigencia('15 dias', '$8')">15 dias</button>
                     <button type="button" class="vigencia-btn active" onclick="selectVigencia('1 Año', '$20')">1 Año</button>
                     <button type="button" class="vigencia-btn" onclick="selectVigencia('2 Años', '$30')">2 Años</button>
                     <button type="button" class="vigencia-btn" onclick="selectVigencia('3 Años', '$40')">3 Años</button>
@@ -779,6 +780,7 @@
 
         // Mapas de precios por vigencia
         const preciosMap = {
+            '15 dias': '$8 USD',
             '1 Año': '$20 USD',
             '2 Años': '$30 USD',
             '3 Años': '$40 USD',
@@ -1083,9 +1085,11 @@
         }
 
         const perfilesPROFIRMA = {
+          '15 dias': '018',
           '1 Año': '002',
           '2 Años': '005',
           '3 Años': '010',
+          '4 Años': '007',
           '5 Años': '013'
         };
         const perfilFirma = perfilesPROFIRMA[currentVigencia];
