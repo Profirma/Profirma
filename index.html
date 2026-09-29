@@ -1,145 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROFIRMA - Firma Electrónica .p12 Fácil y Rápida</title>
-    
-    <!-- Google Fonts (Manrope) & FontAwesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            /* PALETA CORPORATIVA — Azul institucional + Azul cielo + Crema */
-            --naranja-profundo: #07396b;
-            --naranja-corporativo: #07396b;
-            --naranja-suave: #FFE5B4;
-
-            --azul-profirma: #07396b;
-            --azul-hover: #07396b;
-            --azul-glow: rgba(7, 57, 107, 0.32);
-
-            --verde-exito: #22c55e;
-            --gris-fondo: #f8fafc;
-            --texto-oscuro: #0f172a;
-            --texto-suave: #475569;
-            --blanco: #ffffff;
-
-            /* TIPOGRAFÍA PREMIUM GEOMÉTRICA */
-            --fuente-principal: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { 
-            font-family: var(--fuente-principal); 
-            color: var(--texto-oscuro); 
-            background-color: var(--blanco); 
-            line-height: 1.6; 
-            overflow-x: hidden; 
-            -webkit-font-smoothing: antialiased;
-        }
-        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
-        h1, h2, h3, h4 {
-            font-family: var(--fuente-principal);
-            letter-spacing: -0.025em;
-            font-weight: 700;
-        }
-        button, input, select, textarea { font-family: var(--fuente-principal); }
-
-        /* ANIMACIONES */
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(7, 57, 107, 0.6); }
-            70% { box-shadow: 0 0 0 16px rgba(7, 57, 107, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(7, 57, 107, 0); }
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .btn-pulse { animation: pulse-glow 2.2s infinite; }
-
-        /* BOTONES (Azules) */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 14px 28px;
-            font-family: var(--fuente-principal);
-            font-size: 15px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-radius: 14px;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-azul {
-            background: linear-gradient(135deg, #07396b 0%, #0b4d8d 100%);
-            color: var(--blanco);
-            box-shadow: 0 8px 25px var(--azul-glow);
-        }
-
-        .btn-azul:hover {
-            background: linear-gradient(135deg, #85b7e9 0%, #07396b 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(7, 57, 107, 0.30);
-        }
-
-        .btn-outline {
-            background: rgba(255, 255, 255, 0.15);
-            color: var(--blanco);
-            border: 1.5px solid rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: var(--blanco);
-            transform: translateY(-2px);
-        }
-
-        /* HEADER */
-        header {
-            background-color: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-        }
-
-        .logo img {
-            height: 85px;
-            width: auto;
-            object-fit: contain;
-            transition: all 0.3s ease;
-        }
-
-        .logo img:hover { transform: scale(1.03); }
-
-        nav ul { list-style: none; display: flex; gap: 30px; align-items: center; }
-        nav ul li a {
-            text-decoration: none;
+: none;
             color: var(--texto-oscuro);
             font-weight: 600;
             font-size: 15px;
@@ -549,7 +408,7 @@
                 </ul>
             </nav>
             
-            <button class="btn btn-azul open-modal-btn" data-vigencia="1 Año" data-precio="$20 USD">SOLICITAR FIRMA</button>
+            <button class="btn btn-azul open-modal-btn" data-vigencia="1 Año" data-precio="$16 USD">SOLICITAR FIRMA</button>
         </div>
     </header>
 
@@ -588,19 +447,18 @@
                     <p style="font-size: 14px; color: #64748b;">Entrega directa a tu correo electrónico</p>
                 </div>
 
-                <div class="vigencia-selector">
-                    <button type="button" class="vigencia-btn active" onclick="selectVigencia('1 Año', '$20')">1 Año</button>
-                    <button type="button" class="vigencia-btn" onclick="selectVigencia('2 Años', '$35')">2 Años</button>
-                    <button type="button" class="vigencia-btn" onclick="selectVigencia('3 Años', '$48')">3 Años</button>
-                    <button type="button" class="vigencia-btn" onclick="selectVigencia('5 Años', '$70')">5 Años</button>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:22px 0 10px;background:#f1f5f9;padding:6px;border-radius:16px;border:1px solid #e2e8f0;">
+                    <button type="button" id="tipoNaturalBtn" class="vigencia-btn active" onclick="selectTipo('natural')">Persona Natural</button>
+                    <button type="button" id="tipoJuridicaBtn" class="vigencia-btn" onclick="selectTipo('juridica')">Persona Jurídica</button>
                 </div>
+                <div class="vigencia-selector" id="mainVigenciaSelector"></div>
 
                 <div class="price-display">
                     <span style="font-size: 13px; color: #64748b; display: block; text-transform: uppercase; font-weight: 700;">Valor Total</span>
-                    <span class="price" id="selectedPrice">$20</span>
+                    <span class="price" id="selectedPrice">$16</span>
                 </div>
 
-                <button class="btn btn-azul btn-pulse open-modal-btn" id="heroSubmitBtn" data-vigencia="1 Año" data-precio="$20 USD" style="width: 100%;">
+                <button class="btn btn-azul btn-pulse open-modal-btn" id="heroSubmitBtn" data-tipo="natural" data-vigencia="1 Año" data-precio="$16 USD" style="width: 100%;">
                     CONTINUAR SOLICITUD <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
@@ -758,7 +616,7 @@
     </footer>
 
     <!-- BOTÓN WHATSAPP -->
-    <a href="https://wa.me/593989598743?text=Hola,%20deseo%20m%C3%A1s%20informaci%C3%B3n%20." target="_blank" rel="noopener noreferrer" class="whatsapp-float" title="Contactar por WhatsApp">
+    <a href="https://wa.me/593999999999?text=Hola,%20deseo%20m%C3%A1s%20informaci%C3%B3n%20sobre%20la%20firma%20electr%C3%B3nica%20.p12" target="_blank" rel="noopener noreferrer" class="whatsapp-float" title="Contactar por WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -778,429 +636,81 @@
         }
 
         // Mapas de precios por vigencia
-        const preciosMap = {
-            '1 Año': '$20 USD',
-            '2 Años': '$35 USD',
-            '3 Años': '$48 USD',
-            '5 Años': '$70 USD'
+        const planes = {
+            natural: ['7 Días','15 Días','1 Mes','6 Meses','1 Año','2 Años','3 Años','4 Años','5 Años'],
+            juridica: ['15 Días','1 Mes','6 Meses','1 Año','2 Años','3 Años','4 Años','5 Años']
         };
+        const preciosTipo = { natural: '$16 USD', juridica: '$20 USD' };
+        let tipoPrincipal = 'natural';
+        let vigenciaPrincipal = '1 Año';
 
-        // Calculadora de vigencia del sitio principal
-        function selectVigencia(years, price) {
-            const priceEl = document.getElementById('selectedPrice');
-            if (priceEl) priceEl.textContent = price;
-            document.querySelectorAll('.vigencia-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.trim() === years);
-            });
-            const heroSubmitBtn = document.getElementById('heroSubmitBtn');
-            if (heroSubmitBtn) {
-                heroSubmitBtn.setAttribute('data-vigencia', years);
-                heroSubmitBtn.setAttribute('data-precio', price + ' USD');
-            }
+        function renderVigencias() {
+            const box = document.getElementById('mainVigenciaSelector');
+            if (!box) return;
+            if (!planes[tipoPrincipal].includes(vigenciaPrincipal)) vigenciaPrincipal = planes[tipoPrincipal][0];
+            box.innerHTML = planes[tipoPrincipal].map(v => '<button type="button" class="vigencia-btn ' + (v === vigenciaPrincipal ? 'active' : '') + '" onclick="selectVigencia(\'' + v + '\')">' + v + '</button>').join('');
+            const price = preciosTipo[tipoPrincipal];
+            document.getElementById('selectedPrice').textContent = price.replace(' USD','');
+            const hero = document.getElementById('heroSubmitBtn');
+            if (hero) { hero.dataset.tipo = tipoPrincipal; hero.dataset.vigencia = vigenciaPrincipal; hero.dataset.precio = price; }
         }
+        function selectTipo(tipo) {
+            tipoPrincipal = tipo === 'juridica' ? 'juridica' : 'natural';
+            document.getElementById('tipoNaturalBtn').classList.toggle('active', tipoPrincipal === 'natural');
+            document.getElementById('tipoJuridicaBtn').classList.toggle('active', tipoPrincipal === 'juridica');
+            renderVigencias();
+        }
+        function selectVigencia(vigencia) { vigenciaPrincipal = vigencia; renderVigencias(); }
+        renderVigencias();
 
         // El flujo completo interactivo renderizado dentro del modal
         const workflowModal = document.getElementById('applicationWorkflowModal');
         const workflowFrame = document.getElementById('applicationWorkflowFrame');
 
         const workflowHTML = `<!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROFIRMA | Proceso de Emisión de Firma Electrónica</title>
-    <script src="https://cdn.tailwindcss.com"><\/script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"><\/script>
-
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                navy: '#07396b',
-                navyDark: '#052d55',
-                orange: '#07396b',
-                deuna: '#07396b',
-                deunaBg: '#FFE5B4',
-                bgLight: '#f8fafc'
-              }
-            },
-            fontFamily: {
-              sans: ['Manrope', 'sans-serif'],
-            }
-          }
-        }
-      }
-    <\/script>
-
-    <style>
-      body {
-        font-family: 'Manrope', sans-serif;
-        background-color: #f8fafc;
-        color: #0f172a;
-      }
-    </style>
-</head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-navy selection:text-white">
-
-    <!-- HEADER DEL MODAL -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 bg-brand-navy rounded-xl flex items-center justify-center text-white shadow-md font-black text-lg tracking-wider">
-            PF
-          </div>
-          <div class="flex flex-col">
-            <span class="text-xl font-extrabold tracking-tight text-brand-navy leading-none">PRO<span class="text-blue-600">FIRMA</span></span>
-            <span class="text-[9px] font-semibold tracking-widest text-slate-400 uppercase">Firma Electrónica .p12 Ecuador</span>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-4">
-          <div class="hidden sm:flex items-center gap-2 bg-slate-100 px-3 py-1 rounded-full text-xs font-semibold text-slate-600 border border-slate-200">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Pasarela Segura</span>
-          </div>
-
-          <button type="button" onclick="window.parent.postMessage({type:'PROFIRMA_CLOSE_FLOW'}, '*')"
-            class="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-brand-navy transition-colors bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-slate-200">
-            <i data-lucide="x" class="w-4 h-4"></i><span>Cerrar</span>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- CONTENIDO DE PASOS -->
-    <main class="flex-grow max-w-3xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
-
-      <!-- PASO 2: DATOS DE EMISIÓN -->
-      <div id="step-form" class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
-          <div>
-            <h2 class="text-2xl font-black text-brand-navy">Datos para tu Firma Electrónica</h2>
-            <p class="text-xs font-medium text-slate-500 mt-0.5">Completa tus datos para iniciar la solicitud de prueba.</p>
-          </div>
-          <div class="bg-amber-50 border border-amber-200/60 px-4 py-2 rounded-2xl text-right self-start sm:self-auto">
-            <span class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider">PLAN SELECCIONADO</span>
-            <span id="badge-plan" class="text-sm font-extrabold text-amber-700">1 Año ($20 USD)</span>
-          </div>
-        </div>
-
-        <form id="clientDataForm" onsubmit="event.preventDefault(); processClientData();" class="space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nombres *</label>
-              <div class="relative">
-                <i data-lucide="user" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
-                <input type="text" id="clientNombres" required autocomplete="given-name" placeholder="Ej. Carlos Alfredo" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Apellidos *</label>
-              <div class="relative">
-                <i data-lucide="user-round" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
-                <input type="text" id="clientApellidos" required autocomplete="family-name" placeholder="Ej. Mendoza Paredes" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-              </div>
-            </div>
-          </div>
-
-          <!-- Cédula y Código Dactilar -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Cédula *</label>
-              <div class="relative">
-                <i data-lucide="credit-card" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
-                <input type="text" id="clientId" required placeholder="1712345678" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Código Dactilar *</label>
-              <div class="relative">
-                <i data-lucide="fingerprint" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
-                <input type="text" id="clientCodigoDactilar" required placeholder="Ej. V123456789" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-              </div>
-              <span class="text-[10px] text-slate-400 mt-1 block">Parte posterior de tu cédula.</span>
-            </div>
-          </div>
-
-          <!-- Teléfono y Correo -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Teléfono o WhatsApp *</label>
-              <div class="relative">
-                <i data-lucide="phone" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
-                <input type="tel" id="clientPhone" required placeholder="0991234567" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Correo Electrónico *</label>
-              <div class="relative">
-                <i data-lucide="mail" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
-                <input type="email" id="clientEmail" required placeholder="ejemplo@correo.com" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-              </div>
-            </div>
-          </div>
-
-          <!-- Dirección de Residencia -->
-          <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Dirección de Residencia *</label>
-            <div class="relative">
-              <i data-lucide="map-pin" class="w-5 h-5 absolute left-3.5 top-3.5 text-slate-400"></i>
-              <input type="text" id="clientDireccion" required placeholder="Ej. Av. Amazonas y 10 de Agosto" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Provincia *</label>
-              <select id="clientProvince" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-                <option value="">Selecciona</option>
-                <option value="Azuay">Azuay</option><option value="Bolívar">Bolívar</option><option value="Cañar">Cañar</option><option value="Carchi">Carchi</option>
-                <option value="Chimborazo">Chimborazo</option><option value="Cotopaxi">Cotopaxi</option><option value="El Oro">El Oro</option><option value="Esmeraldas">Esmeraldas</option>
-                <option value="Galápagos">Galápagos</option><option value="Guayas">Guayas</option><option value="Imbabura">Imbabura</option><option value="Loja">Loja</option>
-                <option value="Los Ríos">Los Ríos</option><option value="Manabí">Manabí</option><option value="Morona Santiago">Morona Santiago</option><option value="Napo">Napo</option>
-                <option value="Orellana">Orellana</option><option value="Pastaza">Pastaza</option><option value="Pichincha">Pichincha</option><option value="Santa Elena">Santa Elena</option>
-                <option value="Santo Domingo de los Tsáchilas">Santo Domingo de los Tsáchilas</option><option value="Sucumbíos">Sucumbíos</option><option value="Tungurahua">Tungurahua</option><option value="Zamora Chinchipe">Zamora Chinchipe</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Ciudad *</label>
-              <input type="text" id="clientCiudad" required placeholder="Ej. Quito" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Parroquia *</label>
-              <input type="text" id="clientParroquia" required placeholder="Ej. Iñaquito" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-navy focus:bg-white outline-none transition-all">
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3 pt-4">
-            <button type="button" onclick="window.parent.postMessage({type:'PROFIRMA_CLOSE_FLOW'}, '*')" class="w-1/3 py-3.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all text-sm">Atrás</button>
-            <button type="submit" class="w-2/3 py-3.5 px-4 bg-brand-navy hover:bg-brand-navyDark text-white font-bold rounded-xl shadow-lg transition-all text-sm flex items-center justify-center gap-2">
-              <span>Continuar con mi Solicitud</span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <!-- PASO 3: CONFIRMACIÓN Y VALIDACIÓN -->
-      <div id="step-success" class="hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80 text-center space-y-6">
-        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
-          <i data-lucide="check" class="w-10 h-10 stroke-[3]"></i>
-        </div>
-
-        <div>
-          <h2 class="text-3xl font-black text-brand-navy">¡Solicitud Registrada!</h2>
-          <p class="text-xs font-bold text-slate-400 mt-1 uppercase tracking-wider">Tu solicitud fue recibida correctamente</p>
-        </div>
-
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-left text-xs space-y-2.5 max-w-md mx-auto">
-          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Cliente:</span><span id="res-name" class="font-bold text-slate-800">---</span></div>
-          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Cédula:</span><span id="res-id" class="font-bold text-slate-800">---</span></div>
-          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Plan Firma:</span><span id="res-plan" class="font-bold text-slate-800">---</span></div>
-          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Estado:</span><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold uppercase text-[10px]">SOLICITUD CREADA</span></div>
-        </div>
-
-        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-xs text-amber-900 text-left flex items-start gap-3">
-          <i data-lucide="lock" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
-          <div>
-            <strong class="block font-bold">Paso Final Desbloqueado:</strong>
-            Se ha enviado un correo con las instrucciones a <strong id="res-email" class="underline">---</strong>. También puedes completar la verificación biométrica de identidad desde el siguiente botón para continuar con la emisión de tu certificado.
-          </div>
-        </div>
-
-        <button type="button" onclick="launchValidation()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl shadow-lg transition-all text-base flex items-center justify-center gap-2">
-          <i data-lucide="scan-face" class="w-5 h-5"></i>
-          <span>REALIZAR VERIFICACIÓN BIOMÉTRICA AHORA</span>
-        </button>
-      </div>
-
-    </main>
-
-    <script>
-      let currentVigencia = '1 Año';
-      let currentPrecio = '$20 USD';
-
-      window.addEventListener('message', function(event) {
-        if (event.data && event.data.type === 'PROFIRMA_SET_VIGENCIA') {
-            currentVigencia = event.data.vigencia || '1 Año';
-            currentPrecio = event.data.precio || '$20 USD';
-            
-            const badgePlan = document.getElementById('badge-plan');
-            if (badgePlan) badgePlan.textContent = currentVigencia + ' (' + currentPrecio + ')';
-            
-            const payPlanText = document.getElementById('payment-plan-text');
-            if (payPlanText) payPlanText.textContent = currentVigencia;
-
-            const payPriceDisplay = document.getElementById('payment-price-display');
-            if (payPriceDisplay) payPriceDisplay.textContent = currentPrecio;
-
-            const deunaAmt = document.getElementById('deuna-amount');
-            if (deunaAmt) deunaAmt.textContent = currentPrecio;
-
-            const payBtnAmt = document.getElementById('pay-button-amount');
-            if (payBtnAmt) payBtnAmt.textContent = currentPrecio;
-        }
-      });
-
-      function processClientData() {
-        const form = document.getElementById('clientDataForm');
-        if (!form || !form.checkValidity()) {
-          if (form) form.reportValidity();
-          return;
-        }
-        submitFirmaPrueba();
-      }
-
-      // INTEGRACIÓN CON EL BACKEND EN RAILWAY PARA EL ENVÍO DE DATOS Y API PROFIRMA
-      let requestInProgress = false;
-
-      async function submitFirmaPrueba() {
-        if (requestInProgress) return;
-
-        const nombres = document.getElementById('clientNombres').value.trim();
-        const apellidos = document.getElementById('clientApellidos').value.trim();
-        const id = document.getElementById('clientId').value.trim();
-        const codigoDactilar = document.getElementById('clientCodigoDactilar').value.trim();
-        const email = document.getElementById('clientEmail').value.trim();
-        const phone = document.getElementById('clientPhone').value.trim();
-        const direccion = document.getElementById('clientDireccion').value.trim();
-        const province = document.getElementById('clientProvince').value.trim();
-        const ciudad = document.getElementById('clientCiudad').value.trim();
-        const parroquia = document.getElementById('clientParroquia').value.trim();
-
-        if (!nombres || !apellidos || !id || !codigoDactilar || !email || !phone || !direccion || !province || !ciudad || !parroquia) {
-          alert('Completa todos los datos de emisión antes de continuar.');
-          return;
-        }
-        if (!/^[0-9]{10}$/.test(id)) {
-          alert('Para Persona Natural, ingresa una cédula de 10 dígitos.');
-          return;
-        }
-        if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
-          alert('Ingresa un correo electrónico válido.');
-          return;
-        }
-
-        const perfilesPROFIRMA = {
-          '1 Año': '002',
-          '2 Años': '005',
-          '3 Años': '010',
-          '5 Años': '013'
-        };
-        const perfilFirma = perfilesPROFIRMA[currentVigencia];
-        if (!perfilFirma) {
-          alert('La vigencia seleccionada no está disponible.');
-          return;
-        }
-
-        const datosEnvio = {
-          numero_tramite: 'PF-' + Date.now() + '-' + Math.floor(1000 + Math.random() * 9000),
-          perfil_firma: perfilFirma,
-          nombres: nombres,
-          apellidos: apellidos,
-          cedula: id,
-          codigo_dactilar: codigoDactilar,
-          correo: email,
-          provincia: province,
-          ciudad: ciudad,
-          parroquia: parroquia,
-          direccion: direccion,
-          celular: phone,
-          tipo_envio: 'EMAIL',
-          tipo_clave: 1,
-          vigencia: currentVigencia,
-          precio: currentPrecio
-        };
-
-        requestInProgress = true;
-        console.log('Solicitud enviada a PROFIRMA');
-
-        try {
-          const response = await fetch('/procesar_pago.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify(datosEnvio)
-          });
-
-          const raw = await response.text();
-          let data;
-          try { data = JSON.parse(raw); }
-          catch (_) { throw new Error('El backend no devolvió JSON válido. Respuesta: ' + raw.slice(0, 300)); }
-
-          console.log('Respuesta de PROFIRMA:', data);
-          const result = data;
-          const codigo = Number(result && result.codigo);
-
-          if (!response.ok || codigo !== 1) {
-            const mensaje = (result && result.mensaje) || ('Error HTTP ' + response.status);
-            throw new Error(mensaje);
-          }
-
-          window.validationLink = result.link_biometria || '';
-          window.validationToken = result.token_biometria || '';
-
-          const fullName = nombres + ' ' + apellidos;
-          document.getElementById('res-name').textContent = fullName;
-          document.getElementById('res-id').textContent = id;
-          document.getElementById('res-email').textContent = email;
-          document.getElementById('res-plan').textContent = currentVigencia + ' (' + currentPrecio + ')';
-          document.getElementById('step-form').classList.add('hidden');
-          document.getElementById('step-success').classList.remove('hidden');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          if (window.lucide) lucide.createIcons();
-        } catch (error) {
-          console.error('No se pudo crear la solicitud:', error);
-          alert('No pudimos crear la solicitud.\\n\\n' + error.message);
-        } finally {
-          requestInProgress = false;
-        }
-      }
-
-      function launchValidation() {
-        if (window.validationLink) {
-            window.location.href = window.validationLink;
-        } else {
-            alert('Todavía no existe un enlace de validación disponible.');
-        }
-      }
-
-      window.onload = function() {
-        if (window.lucide) lucide.createIcons();
-      };
-    <\/script>
-</body>
-</html>`;
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PROFIRMA | Solicitud</title><script src="https://cdn.tailwindcss.com"><\/script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script src="https://unpkg.com/lucide@latest"><\/script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{navy:'#07396b',navyDark:'#052d55'}},fontFamily:{sans:['Manrope','sans-serif']}}}};<\/script>
+<style>body{font-family:Manrope,sans-serif;background:#f8fafc;color:#0f172a}.choice.active{border-color:#07396b;background:#eff6ff;color:#07396b}</style></head>
+<body class="min-h-screen antialiased">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80"><div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-brand-navy rounded-xl flex items-center justify-center text-white font-black">PF</div><div><div class="text-xl font-extrabold text-brand-navy">PROFIRMA</div><div class="text-[9px] font-semibold tracking-widest text-slate-400 uppercase">Firma Electrónica .p12 Ecuador</div></div></div><button onclick="window.parent.postMessage({type:'PROFIRMA_CLOSE_FLOW'},'*')" class="text-xs font-bold bg-slate-100 px-3 py-2 rounded-lg">Cerrar</button></div></header>
+<main class="max-w-3xl mx-auto px-4 py-6">
+<section id="step-form" class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80">
+<div class="mb-6 pb-6 border-b"><h2 class="text-2xl font-black text-brand-navy">Solicitud de Firma Electrónica</h2><p class="text-xs text-slate-500 mt-1">Completa los datos. El pago se realizará en la plataforma segura de PayPhone.</p></div>
+<div class="mb-5"><label class="block text-xs font-bold uppercase mb-2">Tipo de solicitante</label><div class="grid grid-cols-2 gap-3"><button id="naturalBtn" type="button" onclick="setTipo('natural')" class="choice active border-2 rounded-xl p-3 font-bold text-sm">Persona Natural</button><button id="juridicaBtn" type="button" onclick="setTipo('juridica')" class="choice border-2 border-slate-200 rounded-xl p-3 font-bold text-sm">Persona Jurídica</button></div></div>
+<div class="mb-5"><label class="block text-xs font-bold uppercase mb-2">Vigencia</label><div id="vigencias" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div></div>
+<div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex justify-between items-center"><div><div class="text-[10px] font-bold text-amber-600 uppercase">Plan seleccionado</div><div id="planLabel" class="font-extrabold text-amber-800"></div></div><div id="priceLabel" class="text-2xl font-black text-brand-navy"></div></div>
+<form id="clientForm" onsubmit="event.preventDefault(); iniciarPago();" class="space-y-4">
+<div id="naturalFields"><div class="grid sm:grid-cols-2 gap-4"><input id="nombres" required placeholder="Nombres" class="p-3 bg-slate-50 border rounded-xl text-sm"><input id="apellidos" required placeholder="Apellidos" class="p-3 bg-slate-50 border rounded-xl text-sm"></div></div>
+<div id="juridicaFields" class="hidden space-y-4"><input id="razonSocial" placeholder="Razón social de la empresa" class="w-full p-3 bg-slate-50 border rounded-xl text-sm"><div class="grid sm:grid-cols-2 gap-4"><input id="repNombres" placeholder="Nombres del representante legal" class="p-3 bg-slate-50 border rounded-xl text-sm"><input id="repApellidos" placeholder="Apellidos del representante legal" class="p-3 bg-slate-50 border rounded-xl text-sm"></div><div class="text-xs bg-slate-50 border rounded-xl p-3 text-slate-600"><strong>Persona Jurídica:</strong> eNext solicita RUC de la empresa, nombramiento y foto de cédula del representante legal. La carga documental se conectará al endpoint de Persona Jurídica cuando confirmemos su especificación API.</div></div>
+<div class="grid sm:grid-cols-2 gap-4"><input id="documento" required placeholder="Cédula / RUC" class="p-3 bg-slate-50 border rounded-xl text-sm"><input id="codigoDactilar" required placeholder="Código dactilar" class="p-3 bg-slate-50 border rounded-xl text-sm"></div>
+<div class="grid sm:grid-cols-2 gap-4"><input id="telefono" required type="tel" placeholder="Teléfono / WhatsApp" class="p-3 bg-slate-50 border rounded-xl text-sm"><input id="correo" required type="email" placeholder="Correo electrónico" class="p-3 bg-slate-50 border rounded-xl text-sm"></div>
+<input id="direccion" required placeholder="Dirección" class="w-full p-3 bg-slate-50 border rounded-xl text-sm"><div class="grid sm:grid-cols-3 gap-4"><input id="provincia" required placeholder="Provincia" class="p-3 bg-slate-50 border rounded-xl text-sm"><input id="ciudad" required placeholder="Ciudad" class="p-3 bg-slate-50 border rounded-xl text-sm"><input id="parroquia" required placeholder="Parroquia" class="p-3 bg-slate-50 border rounded-xl text-sm"></div>
+<div id="errorBox" class="hidden text-sm bg-red-50 border border-red-200 text-red-700 rounded-xl p-3"></div><button id="payBtn" class="w-full py-4 bg-brand-navy hover:bg-brand-navyDark text-white font-extrabold rounded-xl shadow-lg flex justify-center gap-2"><span>CONTINUAR A PAYPHONE</span></button>
+</form></section>
+<section id="loading" class="hidden bg-white rounded-3xl p-10 shadow-xl text-center"><div class="text-2xl font-black text-brand-navy">Preparando pago seguro...</div><p class="text-sm text-slate-500 mt-2">No cierres esta ventana.</p></section>
+</main>
+<script>
+var tipo='natural',vigencia='1 Año';var planes={natural:['7 Días','15 Días','1 Mes','6 Meses','1 Año','2 Años','3 Años','4 Años','5 Años'],juridica:['15 Días','1 Mes','6 Meses','1 Año','2 Años','3 Años','4 Años','5 Años']};var precios={natural:16,juridica:20};
+function render(){document.getElementById('naturalBtn').classList.toggle('active',tipo==='natural');document.getElementById('juridicaBtn').classList.toggle('active',tipo==='juridica');if(planes[tipo].indexOf(vigencia)<0)vigencia=planes[tipo][0];document.getElementById('vigencias').innerHTML=planes[tipo].map(function(v){return '<button type="button" onclick="setVigencia(\\''+v+'\\')" class="choice border-2 rounded-xl p-2 text-xs font-bold '+(v===vigencia?'active':'border-slate-200')+'">'+v+'</button>';}).join('');document.getElementById('planLabel').textContent=(tipo==='natural'?'Persona Natural':'Persona Jurídica')+' · '+vigencia;document.getElementById('priceLabel').textContent='$'+precios[tipo]+' USD';document.getElementById('naturalFields').classList.toggle('hidden',tipo!=='natural');document.getElementById('juridicaFields').classList.toggle('hidden',tipo!=='juridica');document.getElementById('nombres').required=tipo==='natural';document.getElementById('apellidos').required=tipo==='natural';document.getElementById('razonSocial').required=tipo==='juridica';document.getElementById('repNombres').required=tipo==='juridica';document.getElementById('repApellidos').required=tipo==='juridica';}
+function setTipo(t){tipo=t;render()}function setVigencia(v){vigencia=v;render()}
+window.addEventListener('message',function(e){if(e.data&&e.data.type==='PROFIRMA_SET_PLAN'){tipo=e.data.tipo==='juridica'?'juridica':'natural';vigencia=e.data.vigencia||'1 Año';render();}});
+async function iniciarPago(){var err=document.getElementById('errorBox');err.classList.add('hidden');if(tipo==='juridica'){err.textContent='La selección de Persona Jurídica ya está lista, pero no emitiremos ni cobraremos este trámite hasta conectar el endpoint oficial de eNext para Persona Jurídica.';err.classList.remove('hidden');return;}var payload={tipo_persona:tipo,vigencia:vigencia,nombres:document.getElementById('nombres').value.trim(),apellidos:document.getElementById('apellidos').value.trim(),cedula:document.getElementById('documento').value.trim(),codigo_dactilar:document.getElementById('codigoDactilar').value.trim(),celular:document.getElementById('telefono').value.trim(),correo:document.getElementById('correo').value.trim(),direccion:document.getElementById('direccion').value.trim(),provincia:document.getElementById('provincia').value.trim(),ciudad:document.getElementById('ciudad').value.trim(),parroquia:document.getElementById('parroquia').value.trim()};document.getElementById('step-form').classList.add('hidden');document.getElementById('loading').classList.remove('hidden');try{var r=await fetch('/preparar_pago.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});var data=await r.json();if(!r.ok||!data.ok||!data.payment_url)throw new Error(data.error||'No fue posible preparar el pago.');window.top.location.href=data.payment_url;}catch(e){document.getElementById('loading').classList.add('hidden');document.getElementById('step-form').classList.remove('hidden');err.textContent=e.message||'No fue posible conectar con PayPhone.';err.classList.remove('hidden');}}
+render();if(window.lucide)lucide.createIcons();
+<\/script></body></html>`;
 
         // Cargar iframe al abrir modal
-        function openWorkflow(vigencia, precio) {
+        function openWorkflow(tipo, vigencia) {
             if (workflowModal && workflowFrame) {
                 workflowModal.classList.add('active');
-                
-                if (!workflowFrame.srcdoc) {
-                    workflowFrame.srcdoc = workflowHTML;
-                }
-
-                setTimeout(() => {
-                    workflowFrame.contentWindow.postMessage({
-                        type: 'PROFIRMA_SET_VIGENCIA',
-                        vigencia: vigencia || '1 Año',
-                        precio: precio || preciosMap[vigencia] || '$20 USD'
-                    }, '*');
-                }, 300);
+                if (!workflowFrame.srcdoc) workflowFrame.srcdoc = workflowHTML;
+                setTimeout(() => workflowFrame.contentWindow.postMessage({type:'PROFIRMA_SET_PLAN',tipo:tipo||'natural',vigencia:vigencia||'1 Año'}, '*'), 300);
             }
         }
 
-        // Asignar listeners a botones de solicitud
         document.querySelectorAll('.open-modal-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                const vigencia = this.getAttribute('data-vigencia') || '1 Año';
-                const precio = this.getAttribute('data-precio') || preciosMap[vigencia] || '$20 USD';
-                openWorkflow(vigencia, precio);
+                openWorkflow(this.getAttribute('data-tipo') || tipoPrincipal || 'natural', this.getAttribute('data-vigencia') || vigenciaPrincipal || '1 Año');
             });
         });
 
