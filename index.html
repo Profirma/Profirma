@@ -1009,14 +1009,10 @@
           <i data-lucide="lock" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
           <div>
             <strong class="block font-bold">Paso Final Desbloqueado:</strong>
-            Se ha enviado un correo con las instrucciones a <strong id="res-email" class="underline">---</strong>. También puedes completar la verificación biométrica de identidad desde el siguiente botón para continuar con la emisión de tu certificado.
+            Después de confirmar el pago y procesar tu solicitud, las instrucciones de validación se enviarán al correo <strong id="res-email" class="underline">---</strong> y al WhatsApp registrado.
           </div>
         </div>
 
-        <button type="button" onclick="launchValidation()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl shadow-lg transition-all text-base flex items-center justify-center gap-2">
-          <i data-lucide="scan-face" class="w-5 h-5"></i>
-          <span>REALIZAR VERIFICACIÓN BIOMÉTRICA AHORA</span>
-        </button>
       </div>
 
     </main>
@@ -1059,190 +1055,117 @@
       // INTEGRACIÓN CON EL BACKEND EN RAILWAY PARA EL ENVÍO DE DATOS Y API PROFIRMA
       let requestInProgress = false;
 
-async function submitFirmaPrueba() {
-  if (requestInProgress) return;
+      async function submitFirmaPrueba() {
+        if (requestInProgress) return;
 
-  const nombres = document.getElementById('clientNombres').value.trim();
-  const apellidos = document.getElementById('clientApellidos').value.trim();
-  const id = document.getElementById('clientId').value.trim();
-  const codigoDactilar = document.getElementById('clientCodigoDactilar').value.trim();
-  const email = document.getElementById('clientEmail').value.trim();
-  const phone = document.getElementById('clientPhone').value.trim();
-  const direccion = document.getElementById('clientDireccion').value.trim();
-  const province = document.getElementById('clientProvince').value.trim();
-  const ciudad = document.getElementById('clientCiudad').value.trim();
-  const parroquia = document.getElementById('clientParroquia').value.trim();
+        const nombres = document.getElementById('clientNombres').value.trim();
+        const apellidos = document.getElementById('clientApellidos').value.trim();
+        const id = document.getElementById('clientId').value.trim();
+        const codigoDactilar = document.getElementById('clientCodigoDactilar').value.trim();
+        const email = document.getElementById('clientEmail').value.trim();
+        const phone = document.getElementById('clientPhone').value.trim();
+        const direccion = document.getElementById('clientDireccion').value.trim();
+        const province = document.getElementById('clientProvince').value.trim();
+        const ciudad = document.getElementById('clientCiudad').value.trim();
+        const parroquia = document.getElementById('clientParroquia').value.trim();
 
-  if (
-    !nombres ||
-    !apellidos ||
-    !id ||
-    !codigoDactilar ||
-    !email ||
-    !phone ||
-    !direccion ||
-    !province ||
-    !ciudad ||
-    !parroquia
-  ) {
-    alert('Completa todos los datos de emisión antes de continuar.');
-    return;
-  }
+        if (!nombres || !apellidos || !id || !codigoDactilar || !email || !phone || !direccion || !province || !ciudad || !parroquia) {
+          alert('Completa todos los datos de emisión antes de continuar.');
+          return;
+        }
+        if (!/^[0-9]{10}$/.test(id)) {
+          alert('Para Persona Natural, ingresa una cédula de 10 dígitos.');
+          return;
+        }
+        if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+          alert('Ingresa un correo electrónico válido.');
+          return;
+        }
 
-  if (!/^[0-9]{10}$/.test(id)) {
-    alert('Para Persona Natural, ingresa una cédula de 10 dígitos.');
-    return;
-  }
+        const perfilesPROFIRMA = {
+          '1 Año': '002',
+          '2 Años': '005',
+          '3 Años': '010',
+          '5 Años': '013'
+        };
+        const perfilFirma = perfilesPROFIRMA[currentVigencia];
+        if (!perfilFirma) {
+          alert('La vigencia seleccionada no está disponible.');
+          return;
+        }
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    alert('Ingresa un correo electrónico válido.');
-    return;
-  }
+        const datosEnvio = {
+          numero_tramite: 'PF-' + Date.now() + '-' + Math.floor(1000 + Math.random() * 9000),
+          perfil_firma: perfilFirma,
+          nombres: nombres,
+          apellidos: apellidos,
+          cedula: id,
+          codigo_dactilar: codigoDactilar,
+          correo: email,
+          provincia: province,
+          ciudad: ciudad,
+          parroquia: parroquia,
+          direccion: direccion,
+          celular: phone,
+          tipo_envio: 'EMAIL',
+          tipo_clave: 1,
+          vigencia: currentVigencia,
+          precio: currentPrecio
+        };
 
-  /*
-   * Estos son exactamente los perfiles que ya utilizas
-   * con eNext. No los modificamos.
-   */
-  const perfilesPROFIRMA = {
-    '1 Año': '002',
-    '2 Años': '005',
-    '3 Años': '010',
-    '5 Años': '013'
-  };
+        requestInProgress = true;
+        console.log('Preparando pago PROFIRMA con PayPhone');
 
-  const perfilFirma = perfilesPROFIRMA[currentVigencia];
+        try {
+          const response = await fetch('/preparar_pago.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(datosEnvio)
+          });
 
-  if (!perfilFirma) {
-    alert('La vigencia seleccionada no está disponible.');
-    return;
-  }
+          const raw = await response.text();
+          let data;
+          try { data = JSON.parse(raw); }
+          catch (_) { throw new Error('El backend no devolvió JSON válido. Respuesta: ' + raw.slice(0, 300)); }
 
-  /*
-   * Conservamos la información que posteriormente
-   * necesitará eNext.
-   */
-  const datosEnvio = {
-    numero_tramite:
-      'PF-' +
-      Date.now() +
-      '-' +
-      Math.floor(1000 + Math.random() * 9000),
+          console.log('Respuesta de preparar_pago.php:', data);
 
-    perfil_firma: perfilFirma,
+          if (!response.ok || !data || data.ok !== true) {
+            const mensaje = (data && (data.mensaje || data.error)) || ('Error HTTP ' + response.status);
+            throw new Error(mensaje);
+          }
 
-    nombres: nombres,
-    apellidos: apellidos,
+          const paymentUrl = data.paymentUrl || data.payment_url || data.payWithCard || data.payWithPayPhone || data.url;
 
-    cedula: id,
-    codigo_dactilar: codigoDactilar,
+          if (!paymentUrl) {
+            throw new Error('PayPhone no devolvió la dirección de pago.');
+          }
 
-    correo: email,
+          // El formulario vive dentro de un iframe. Abrimos PayPhone en la ventana principal.
+          window.top.location.href = paymentUrl;
+        } catch (error) {
+          console.error('No se pudo iniciar el pago:', error);
+          alert('No pudimos iniciar el pago.\n\n' + error.message);
+        } finally {
+          requestInProgress = false;
+        }
+      }
 
-    provincia: province,
-    ciudad: ciudad,
-    parroquia: parroquia,
-    direccion: direccion,
+      function launchValidation() {
+        if (window.validationLink) {
+            window.location.href = window.validationLink;
+        } else {
+            alert('Todavía no existe un enlace de validación disponible.');
+        }
+      }
 
-    celular: phone,
+      window.onload = function() {
+        if (window.lucide) lucide.createIcons();
+      };
+    <\/script>
+</body>
+</html>`;
 
-    tipo_envio: 'EMAIL',
-    tipo_clave: 1,
-
-    vigencia: currentVigencia,
-    precio: currentPrecio
-  };
-
-  requestInProgress = true;
-
-  console.log('Preparando pago PROFIRMA...');
-
-  try {
-
-    /*
-     * AQUÍ ESTÁ EL CAMBIO IMPORTANTE.
-     *
-     * Antes:
-     * /procesar_pago.php
-     *
-     * Ahora:
-     * /preparar_pago.php
-     *
-     * Por lo tanto eNext NO se ejecuta todavía.
-     */
-    const response = await fetch('/preparar_pago.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(datosEnvio)
-    });
-
-    const raw = await response.text();
-
-    let data;
-
-    try {
-      data = JSON.parse(raw);
-    } catch (_) {
-      throw new Error(
-        'El servidor no devolvió una respuesta válida. ' +
-        raw.slice(0, 300)
-      );
-    }
-
-    console.log('Respuesta preparar_pago:', data);
-
-    if (!response.ok || !data.ok) {
-      throw new Error(
-        data.mensaje ||
-        data.error ||
-        'No fue posible preparar el pago.'
-      );
-    }
-
-    /*
-     * preparar_pago.php debe devolver la URL oficial
-     * generada por PayPhone.
-     */
-    const paymentUrl =
-      data.paymentUrl ||
-      data.payment_url ||
-      data.payWithCard ||
-      data.payWithPayPhone;
-
-    if (!paymentUrl) {
-      throw new Error(
-        'PayPhone no devolvió una dirección de pago.'
-      );
-    }
-
-    /*
-     * IMPORTANTE:
-     *
-     * PROFIRMA está funcionando dentro de un iframe.
-     * Por eso redirigimos la ventana principal.
-     *
-     * El cliente sale del modal y entra directamente
-     * al formulario seguro de PayPhone.
-     */
-    window.top.location.href = paymentUrl;
-
-  } catch (error) {
-
-    console.error('Error preparando pago:', error);
-
-    alert(
-      'No pudimos iniciar el pago.\n\n' +
-      error.message
-    );
-
-  } finally {
-
-    requestInProgress = false;
-
-  }
-}
         // Cargar iframe al abrir modal
         function openWorkflow(vigencia, precio) {
             if (workflowModal && workflowFrame) {
