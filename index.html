@@ -1145,17 +1145,9 @@
           window.top.location.href = paymentUrl;
         } catch (error) {
           console.error('No se pudo iniciar el pago:', error);
-          alert('No pudimos iniciar el pago.\n\n' + error.message);
+          alert('No pudimos iniciar el pago.\\n\\n' + error.message);
         } finally {
           requestInProgress = false;
-        }
-      }
-
-      function launchValidation() {
-        if (window.validationLink) {
-            window.location.href = window.validationLink;
-        } else {
-            alert('Todavía no existe un enlace de validación disponible.');
         }
       }
 
