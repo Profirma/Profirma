@@ -1,4 +1,145 @@
-: none;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROFIRMA - Firma Electrónica .p12 Fácil y Rápida</title>
+    
+    <!-- Google Fonts (Manrope) & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* PALETA CORPORATIVA — Azul institucional + Azul cielo + Crema */
+            --naranja-profundo: #07396b;
+            --naranja-corporativo: #07396b;
+            --naranja-suave: #FFE5B4;
+
+            --azul-profirma: #07396b;
+            --azul-hover: #07396b;
+            --azul-glow: rgba(7, 57, 107, 0.32);
+
+            --verde-exito: #22c55e;
+            --gris-fondo: #f8fafc;
+            --texto-oscuro: #0f172a;
+            --texto-suave: #475569;
+            --blanco: #ffffff;
+
+            /* TIPOGRAFÍA PREMIUM GEOMÉTRICA */
+            --fuente-principal: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: var(--fuente-principal); 
+            color: var(--texto-oscuro); 
+            background-color: var(--blanco); 
+            line-height: 1.6; 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        h1, h2, h3, h4 {
+            font-family: var(--fuente-principal);
+            letter-spacing: -0.025em;
+            font-weight: 700;
+        }
+        button, input, select, textarea { font-family: var(--fuente-principal); }
+
+        /* ANIMACIONES */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(7, 57, 107, 0.6); }
+            70% { box-shadow: 0 0 0 16px rgba(7, 57, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(7, 57, 107, 0); }
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .btn-pulse { animation: pulse-glow 2.2s infinite; }
+
+        /* BOTONES (Azules) */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            font-family: var(--fuente-principal);
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-azul {
+            background: linear-gradient(135deg, #07396b 0%, #0b4d8d 100%);
+            color: var(--blanco);
+            box-shadow: 0 8px 25px var(--azul-glow);
+        }
+
+        .btn-azul:hover {
+            background: linear-gradient(135deg, #85b7e9 0%, #07396b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(7, 57, 107, 0.30);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--blanco);
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: var(--blanco);
+            transform: translateY(-2px);
+        }
+
+        /* HEADER */
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .logo img {
+            height: 85px;
+            width: auto;
+            object-fit: contain;
+            transition: all 0.3s ease;
+        }
+
+        .logo img:hover { transform: scale(1.03); }
+
+        nav ul { list-style: none; display: flex; gap: 30px; align-items: center; }
+        nav ul li a {
+            text-decoration: none;
             color: var(--texto-oscuro);
             font-weight: 600;
             font-size: 15px;
