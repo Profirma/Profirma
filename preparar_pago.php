@@ -106,6 +106,7 @@ $dbUser = isset($db['user']) ? urldecode((string) $db['user']) : '';
 $dbPass = isset($db['pass']) ? urldecode((string) $db['pass']) : '';
 
 try {
+
     $pdo = new PDO(
         "pgsql:host={$dbHost};port={$dbPort};dbname={$dbName}",
         $dbUser,
@@ -116,7 +117,9 @@ try {
             PDO::ATTR_EMULATE_PREPARES => false
         ]
     );
+
 } catch (Throwable $e) {
+
     responder(500, [
         'ok' => false,
         'message' => 'No se pudo conectar con PostgreSQL.'
@@ -174,10 +177,13 @@ if (
     $tipoNormalizado === 'juridica' ||
     $tipoNormalizado === 'personajuridica'
 ) {
+
     $tipoPersona = 'juridica';
     $nombreTipo = 'Persona Jurídica';
     $montoCentavos = 2000;
+
 } else {
+
     $tipoPersona = 'natural';
     $nombreTipo = 'Persona Natural';
     $montoCentavos = 1600;
@@ -285,9 +291,14 @@ if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 */
 
 try {
+
     $random = strtoupper(bin2hex(random_bytes(4)));
+
 } catch (Throwable $e) {
-    $random = strtoupper(substr(md5(uniqid('', true)), 0, 8));
+
+    $random = strtoupper(
+        substr(md5(uniqid('', true)), 0, 8)
+    );
 }
 
 $clientTransactionId =
@@ -302,8 +313,9 @@ $clientTransactionId =
 | DATOS QUE CONSERVAREMOS PARA eNEXT
 |--------------------------------------------------------------------------
 |
-| Guardamos el JSON completo recibido del formulario.
-| No ejecutamos eNext todavía.
+| Guardamos el JSON completo recibido desde PROFIRMA.
+| NO ejecutamos eNext todavía.
+|
 |--------------------------------------------------------------------------
 */
 
@@ -313,9 +325,14 @@ $datosSolicitud['tipoPersona'] = $tipoPersona;
 $datosSolicitud['vigencia'] = $vigencia;
 
 /*
-| El precio válido es siempre el calculado por el servidor.
-| No confiamos en el precio recibido desde el navegador.
+|--------------------------------------------------------------------------
+| PRECIO REAL DEL SERVIDOR
+|--------------------------------------------------------------------------
+|
+| No confiamos en el precio enviado por el navegador.
+|
 */
+
 $datosSolicitud['monto_centavos'] = $montoCentavos;
 $datosSolicitud['currency'] = 'USD';
 
@@ -327,6 +344,7 @@ $jsonSolicitud = json_encode(
 );
 
 if ($jsonSolicitud === false) {
+
     responder(500, [
         'ok' => false,
         'message' => 'No se pudieron preparar los datos de la solicitud.'
@@ -341,6 +359,7 @@ if ($jsonSolicitud === false) {
 */
 
 try {
+
     $sql = "
         INSERT INTO solicitudes (
             client_transaction_id,
@@ -371,6 +390,7 @@ try {
     ]);
 
 } catch (Throwable $e) {
+
     responder(500, [
         'ok' => false,
         'message' => 'No se pudo registrar la solicitud antes del pago.'
@@ -393,45 +413,63 @@ $reference =
 
 /*
 |--------------------------------------------------------------------------
-| URL DE RESPUESTA
+| URL DE RESPUESTA PAYPHONE
 |--------------------------------------------------------------------------
 */
 
 $responseUrl =
     'https://profirma.up.railway.app/payphone_respuesta.php';
 
+$cancellationUrl =
+    'https://profirma.up.railway.app/';
+
 
 /*
 |--------------------------------------------------------------------------
-| DATOS PAYPHONE
+| DATOS PARA PAYPHONE
 |--------------------------------------------------------------------------
 */
 
 $payphoneData = [
+
     'amount' => $montoCentavos,
+
     'amountWithoutTax' => $montoCentavos,
+
     'amountWithTax' => 0,
+
     'tax' => 0,
+
     'service' => 0,
+
     'tip' => 0,
-    'clientTransactionId' => $clientTransactionId,
-    'reference' => $reference,
-    'storeId' => $payphoneStoreId,
-    'currency' => 'USD',
-    'responseUrl' => $responseUrl,
+
+    'clientTransactionId' =>
+        $clientTransactionId,
+
+    'reference' =>
+        $reference,
+
+    'storeId' =>
+        $payphoneStoreId,
+
+    'currency' =>
+        'USD',
+
+    'responseUrl' =>
+        $responseUrl,
+
     'cancellationUrl' =>
-        'https://profirma.up.railway.app/',
-    'timeZone' => -5
+        $cancellationUrl,
+
+    'timeZone' =>
+        -5
 ];
 
 
 /*
 |--------------------------------------------------------------------------
-| CORREO
-|--------------------------------------------------------------------------
-|
-| No enviamos automáticamente teléfono/documento porque los datos
-| del solicitante pueden ser diferentes a los del titular del pago.
+| CORREO DEL CLIENTE
 |--------------------------------------------------------------------------
 */
 
@@ -442,7 +480,7 @@ if ($email !== '') {
 
 /*
 |--------------------------------------------------------------------------
-| CONVERTIR PETICIÓN PAYPHONE A JSON
+| CONVERTIR DATOS PAYPHONE A JSON
 |--------------------------------------------------------------------------
 */
 
@@ -453,7 +491,9 @@ $jsonPayphone = json_encode(
 );
 
 if ($jsonPayphone === false) {
+
     try {
+
         $stmt = $pdo->prepare("
             UPDATE solicitudes
             SET
@@ -464,41 +504,51 @@ if ($jsonPayphone === false) {
         ");
 
         $stmt->execute([
-            ':error' => 'No se pudo construir la solicitud PayPhone.',
-            ':id' => $clientTransactionId
+            ':error' =>
+                'No se pudo construir la solicitud PayPhone.',
+            ':id' =>
+                $clientTransactionId
         ]);
+
     } catch (Throwable $ignored) {
     }
 
     responder(500, [
         'ok' => false,
-        'message' => 'No se pudo preparar la información del pago.'
+        'message' =>
+            'No se pudo preparar la información del pago.'
     ]);
 }
 
 
 /*
 |--------------------------------------------------------------------------
-| LLAMADA PAYPHONE PREPARE
+| LLAMADA PAYPHONE - PREPARE
 |--------------------------------------------------------------------------
 */
 
 $curl = curl_init();
 
 if ($curl === false) {
+
     responder(500, [
         'ok' => false,
-        'message' => 'No se pudo iniciar la conexión con PayPhone.'
+        'message' =>
+            'No se pudo iniciar la conexión con PayPhone.'
     ]);
 }
 
+
 curl_setopt_array($curl, [
+
     CURLOPT_URL =>
         'https://pay.payphonetodoesposible.com/api/button/Prepare',
 
-    CURLOPT_POST => true,
+    CURLOPT_POST =>
+        true,
 
-    CURLOPT_POSTFIELDS => $jsonPayphone,
+    CURLOPT_POSTFIELDS =>
+        $jsonPayphone,
 
     CURLOPT_HTTPHEADER => [
         'Authorization: Bearer ' . $payphoneToken,
@@ -506,13 +556,22 @@ curl_setopt_array($curl, [
         'Accept: application/json'
     ],
 
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_CONNECTTIMEOUT => 15,
-    CURLOPT_TIMEOUT => 30,
-    CURLOPT_FOLLOWLOCATION => false
+    CURLOPT_RETURNTRANSFER =>
+        true,
+
+    CURLOPT_CONNECTTIMEOUT =>
+        15,
+
+    CURLOPT_TIMEOUT =>
+        30,
+
+    CURLOPT_FOLLOWLOCATION =>
+        false
 ]);
 
+
 $respuestaPayphone = curl_exec($curl);
+
 $curlError = curl_error($curl);
 
 $httpCode = (int) curl_getinfo(
@@ -532,6 +591,7 @@ curl_close($curl);
 if ($respuestaPayphone === false) {
 
     try {
+
         $stmt = $pdo->prepare("
             UPDATE solicitudes
             SET
@@ -542,23 +602,37 @@ if ($respuestaPayphone === false) {
         ");
 
         $stmt->execute([
-            ':error' => 'Error de conexión con PayPhone.',
-            ':id' => $clientTransactionId
+            ':error' =>
+                'Error de conexión con PayPhone: ' .
+                $curlError,
+
+            ':id' =>
+                $clientTransactionId
         ]);
+
     } catch (Throwable $ignored) {
     }
 
+
     responder(502, [
+
         'ok' => false,
-        'message' => 'No fue posible conectar con PayPhone.',
-        'detail' => $curlError
+
+        'message' =>
+            'No fue posible conectar con PayPhone.',
+
+        'curl_error' =>
+            $curlError,
+
+        'clientTransactionId' =>
+            $clientTransactionId
     ]);
 }
 
 
 /*
 |--------------------------------------------------------------------------
-| DECODIFICAR RESPUESTA
+| DECODIFICAR RESPUESTA PAYPHONE
 |--------------------------------------------------------------------------
 */
 
@@ -567,9 +641,17 @@ $resultado = json_decode(
     true
 );
 
+
+/*
+|--------------------------------------------------------------------------
+| PAYPHONE DEVOLVIÓ ALGO QUE NO ES JSON
+|--------------------------------------------------------------------------
+*/
+
 if (!is_array($resultado)) {
 
     try {
+
         $stmt = $pdo->prepare("
             UPDATE solicitudes
             SET
@@ -580,17 +662,46 @@ if (!is_array($resultado)) {
         ");
 
         $stmt->execute([
-            ':error' => 'PayPhone devolvió una respuesta no válida.',
-            ':id' => $clientTransactionId
+            ':error' =>
+                'PayPhone devolvió una respuesta no válida.',
+
+            ':id' =>
+                $clientTransactionId
         ]);
+
     } catch (Throwable $ignored) {
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | DIAGNÓSTICO TEMPORAL
+    |--------------------------------------------------------------------------
+    |
+    | Mostramos parte de la respuesta para saber qué está devolviendo
+    | PayPhone.
+    |
+    */
+
     responder(502, [
+
         'ok' => false,
+
         'message' =>
             'PayPhone devolvió una respuesta que no pudo ser procesada.',
-        'httpCode' => $httpCode
+
+        'payphone_http_code' =>
+            $httpCode,
+
+        'payphone_raw_response' =>
+            substr(
+                (string) $respuestaPayphone,
+                0,
+                1500
+            ),
+
+        'clientTransactionId' =>
+            $clientTransactionId
     ]);
 }
 
@@ -605,9 +716,30 @@ if ($httpCode < 200 || $httpCode >= 300) {
 
     $mensajePayphone =
         $resultado['message']
+        ?? $resultado['Message']
         ?? 'PayPhone rechazó la preparación de la transacción.';
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | GUARDAR ERROR EN POSTGRESQL
+    |--------------------------------------------------------------------------
+    */
+
     try {
+
+        $errorParaGuardar =
+            json_encode(
+                $resultado,
+                JSON_UNESCAPED_UNICODE |
+                JSON_UNESCAPED_SLASHES
+            );
+
+        if ($errorParaGuardar === false) {
+            $errorParaGuardar =
+                (string) $mensajePayphone;
+        }
+
         $stmt = $pdo->prepare("
             UPDATE solicitudes
             SET
@@ -618,19 +750,55 @@ if ($httpCode < 200 || $httpCode >= 300) {
         ");
 
         $stmt->execute([
-            ':error' => $mensajePayphone,
-            ':id' => $clientTransactionId
+            ':error' =>
+                $errorParaGuardar,
+
+            ':id' =>
+                $clientTransactionId
         ]);
+
     } catch (Throwable $ignored) {
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | DIAGNÓSTICO TEMPORAL PAYPHONE
+    |--------------------------------------------------------------------------
+    |
+    | Esto nos permitirá ver EXACTAMENTE qué está rechazando PayPhone.
+    |
+    | IMPORTANTE:
+    | NO mostramos el token ni las credenciales.
+    |
+    */
+
     responder(502, [
-        'ok' => false,
-        'message' => $mensajePayphone,
-        'payphoneErrorCode' =>
-            $resultado['errorCode'] ?? null,
-        'errors' =>
-            $resultado['errors'] ?? null
+
+        'ok' =>
+            false,
+
+        'message' =>
+            $mensajePayphone,
+
+        'payphone_http_code' =>
+            $httpCode,
+
+        'payphone_error_code' =>
+            $resultado['errorCode']
+            ?? $resultado['ErrorCode']
+            ?? null,
+
+        'payphone_errors' =>
+            $resultado['errors']
+            ?? $resultado['Errors']
+            ?? null,
+
+        'payphone_response' =>
+            $resultado,
+
+        'clientTransactionId' =>
+            $clientTransactionId
     ]);
 }
 
@@ -654,21 +822,27 @@ $payWithPayPhone =
 $paymentUrl = '';
 
 if ($payWithCard !== '') {
-    $paymentUrl = $payWithCard;
+
+    $paymentUrl =
+        $payWithCard;
+
 } elseif ($payWithPayPhone !== '') {
-    $paymentUrl = $payWithPayPhone;
+
+    $paymentUrl =
+        $payWithPayPhone;
 }
 
 
 /*
 |--------------------------------------------------------------------------
-| VALIDAR URL
+| VALIDAR QUE PAYPHONE DEVOLVIÓ URL
 |--------------------------------------------------------------------------
 */
 
 if ($paymentUrl === '') {
 
     try {
+
         $stmt = $pdo->prepare("
             UPDATE solicitudes
             SET
@@ -679,23 +853,40 @@ if ($paymentUrl === '') {
         ");
 
         $stmt->execute([
-            ':error' => 'PayPhone no devolvió una URL de pago.',
-            ':id' => $clientTransactionId
+            ':error' =>
+                'PayPhone no devolvió una URL de pago.',
+
+            ':id' =>
+                $clientTransactionId
         ]);
+
     } catch (Throwable $ignored) {
     }
 
+
     responder(502, [
-        'ok' => false,
-        'message' => 'PayPhone no devolvió una URL de pago.',
-        'clientTransactionId' => $clientTransactionId
+
+        'ok' =>
+            false,
+
+        'message' =>
+            'PayPhone respondió correctamente pero no devolvió una URL de pago.',
+
+        'payphone_http_code' =>
+            $httpCode,
+
+        'payphone_response' =>
+            $resultado,
+
+        'clientTransactionId' =>
+            $clientTransactionId
     ]);
 }
 
 
 /*
 |--------------------------------------------------------------------------
-| GUARDAR PAYMENT ID
+| PAYMENT ID
 |--------------------------------------------------------------------------
 */
 
@@ -704,8 +895,17 @@ $paymentId =
         ? trim((string) $resultado['paymentId'])
         : null;
 
+
+/*
+|--------------------------------------------------------------------------
+| GUARDAR PAYMENT ID
+|--------------------------------------------------------------------------
+*/
+
 if ($paymentId !== null && $paymentId !== '') {
+
     try {
+
         $stmt = $pdo->prepare("
             UPDATE solicitudes
             SET
@@ -715,32 +915,51 @@ if ($paymentId !== null && $paymentId !== '') {
         ");
 
         $stmt->execute([
-            ':payment_id' => $paymentId,
-            ':id' => $clientTransactionId
+            ':payment_id' =>
+                $paymentId,
+
+            ':id' =>
+                $clientTransactionId
         ]);
+
     } catch (Throwable $ignored) {
+
         /*
-         * La orden principal ya está registrada.
-         * No exponemos detalles internos de PostgreSQL.
-         */
+        |--------------------------------------------------------------------------
+        | La solicitud principal ya está guardada.
+        |--------------------------------------------------------------------------
+        |
+        | No detenemos el flujo únicamente porque no se pudo guardar
+        | paymentId.
+        |
+        */
+
     }
 }
 
 
 /*
 |--------------------------------------------------------------------------
-| RESPUESTA FINAL
+| RESPUESTA FINAL A PROFIRMA
 |--------------------------------------------------------------------------
 */
 
 responder(200, [
-    'ok' => true,
 
-    'url' => $paymentUrl,
-    'paymentUrl' => $paymentUrl,
+    'ok' =>
+        true,
 
-    'payWithCard' => $payWithCard,
-    'payWithPayPhone' => $payWithPayPhone,
+    'url' =>
+        $paymentUrl,
+
+    'paymentUrl' =>
+        $paymentUrl,
+
+    'payWithCard' =>
+        $payWithCard,
+
+    'payWithPayPhone' =>
+        $payWithPayPhone,
 
     'clientTransactionId' =>
         $clientTransactionId,
