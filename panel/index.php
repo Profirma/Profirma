@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (empty($_SESSION['profirma_admin'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
+<?php
 /*
 |--------------------------------------------------------------------------
 | PROFIRMA - PANEL ADMINISTRATIVO
