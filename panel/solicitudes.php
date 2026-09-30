@@ -1465,11 +1465,6 @@ const planes = {
         },
 
         {
-            nombre: '6 Meses',
-            precio: 15
-        },
-
-        {
             nombre: '1 Año',
             precio: 20
         },
