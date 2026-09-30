@@ -1079,7 +1079,7 @@ function obtenerPlan(
                 </h3>
 
                 <p>
-                    Gestión interna de PROFIRMA
+                    Gestión interna de PRO-FIRMA
                 </p>
 
             </div>
@@ -1100,7 +1100,7 @@ function obtenerPlan(
                     </strong>
 
                     <span>
-                        PROFIRMA
+                        PRO-FIRMA
                     </span>
 
                 </div>
@@ -1119,7 +1119,7 @@ function obtenerPlan(
                 <div>
 
                     <h1>
-                        Bienvenido a PROFIRMA
+                        Bienvenido a PRO-FIRMA
                     </h1>
 
                     <p>
@@ -1282,7 +1282,7 @@ function obtenerPlan(
                         </h3>
 
                         <p>
-                            Actividad reciente de la plataforma PROFIRMA
+                            Actividad reciente de la plataforma PRO-FIRMA
                         </p>
 
                     </div>
