@@ -11,7 +11,7 @@ date_default_timezone_set('America/Guayaquil');
 
 /*
 |--------------------------------------------------------------------------
-| PROFIRMA - REPORTE PARA PDF / IMPRESIÓN
+| PRO-FIRMA - REPORTE PARA PDF / IMPRESIÓN
 |--------------------------------------------------------------------------
 | SOLO LECTURA.
 | No modifica PayPhone.
@@ -203,7 +203,7 @@ if ($databaseUrl === '') {
     } catch (Throwable $e) {
 
         error_log(
-            'PROFIRMA / Reporte impresión: ' .
+            'PRO-FIRMA / Reporte impresión: ' .
             $e->getMessage()
         );
 
@@ -380,7 +380,7 @@ $fechaGeneracion = date('d/m/Y H:i');
 >
 
 <title>
-    Reporte PROFIRMA
+    Reporte PRO-FIRMA
 </title>
 
 
@@ -886,7 +886,7 @@ tbody tr:nth-child(even) {
     <div class="toolbar-title">
 
         <strong>
-            Reporte PROFIRMA
+            Reporte PRO-FIRMA
         </strong>
 
         <span>
@@ -940,7 +940,7 @@ tbody tr:nth-child(even) {
             <div>
 
                 <h1>
-                    PROFIRMA
+                    PRO-FIRMA
                 </h1>
 
                 <p>
@@ -1404,7 +1404,7 @@ tbody tr:nth-child(even) {
     <div class="footer">
 
         Reporte generado automáticamente desde
-        el Panel Administrativo de PROFIRMA.
+        el Panel Administrativo de PRO-FIRMA.
 
         <br>
 
