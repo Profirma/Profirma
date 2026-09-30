@@ -471,7 +471,7 @@ if ($jsonPayload === false) {
     responder(500, [
         'codigo' => 0,
         'mensaje' =>
-            'No se pudo preparar la solicitud para eNext.'
+            'No se pudo preparar la solicitud.'
     ]);
 }
 
@@ -754,7 +754,7 @@ if (
     responder(502, [
         'codigo' => 0,
         'mensaje' =>
-            'La solicitud fue registrada en eNext, pero la respuesta del servicio quedó incompleta.'
+            'La solicitud fue registrada, pero la respuesta del servicio quedó incompleta.'
     ]);
 }
 
