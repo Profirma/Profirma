@@ -17,7 +17,7 @@ date_default_timezone_set('America/Guayaquil');
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Solicitudes | PROFIRMA</title>
+<title>Solicitudes | PRO-FIRMA</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -903,8 +903,8 @@ body {
             </h2>
 
             <p>
-                Emisión administrativa directa mediante eNext.
-                No utiliza PayPhone.
+                Emisión administrativa 
+          
             </p>
 
         </div>
