@@ -2092,7 +2092,7 @@ firmaForm.addEventListener(
 
             mostrarResultado(
                 'success',
-                'Solicitud enviada correctamente a eNext',
+                'Solicitud enviada correctamente',
                 'La información para continuar el proceso fue enviada al cliente por el medio configurado.' +
                 numeroTramite
             );
