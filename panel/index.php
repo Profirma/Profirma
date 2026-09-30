@@ -9,7 +9,7 @@ if (empty($_SESSION['profirma_admin'])) {
 
 /*
 |--------------------------------------------------------------------------
-| PROFIRMA - PANEL ADMINISTRATIVO
+| PRO-FIRMA - PANEL ADMINISTRATIVO
 |--------------------------------------------------------------------------
 | Panel conectado a PostgreSQL.
 | SOLO LEE información de la tabla solicitudes.
@@ -250,7 +250,7 @@ if ($databaseUrl === '') {
     } catch (Throwable $e) {
 
         error_log(
-            'PROFIRMA / Panel PostgreSQL: ' .
+            'PRO-FIRMA / Panel PostgreSQL: ' .
             $e->getMessage()
         );
 
