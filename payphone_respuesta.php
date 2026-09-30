@@ -965,6 +965,8 @@ if (
 
 $perfilesPermitidos = [
 
+    '018',
+
     '002',
 
     '005',
