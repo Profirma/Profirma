@@ -1040,7 +1040,7 @@ function obtenerPlan(
 
 
             <li>
-                <a href="#">
+                <a href="reportes.php">
                     <i class="fa-solid fa-chart-column"></i>
                     <span>Reportes</span>
                 </a>
@@ -1290,7 +1290,7 @@ function obtenerPlan(
 
                     <a
                         class="report-button"
-                        href="#"
+                        href="reportes.php"
                     >
 
                         <i class="fa-solid fa-chart-column"></i>
