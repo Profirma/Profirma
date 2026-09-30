@@ -1370,12 +1370,7 @@ body {
                         <strong>
                             Emisión administrativa
                         </strong>
-
-                        <br>
-
-                        El valor mostrado es únicamente una referencia.
-                        Esta emisión no utiliza PayPhone ni se registra
-                        como una venta pagada.
+                        
 
                     </div>
 
