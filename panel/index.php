@@ -1038,7 +1038,7 @@ function obtenerPlan(
 
 
             <li>
-                <a href="#">
+                <a href="ventas.php">
                     <i class="fa-solid fa-file-signature"></i>
                     <span>Solicitudes</span>
                 </a>
