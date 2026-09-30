@@ -1415,11 +1415,6 @@ const planes = {
     natural: [
 
         {
-            nombre: '7 Días',
-            precio: 8
-        },
-
-        {
             nombre: '15 Días',
             precio: 8
         },
