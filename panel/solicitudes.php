@@ -17,7 +17,7 @@ date_default_timezone_set('America/Guayaquil');
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Solicitudes | PROFIRMA</title>
+<title>Solicitudes | PRO-FIRMA</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,7 +59,6 @@ body {
     color: var(--text);
 }
 
-
 /* =========================================================
    SIDEBAR
 ========================================================= */
@@ -68,7 +67,6 @@ body {
     position: fixed;
     left: 0;
     top: 0;
-
     width: 250px;
     height: 100vh;
 
@@ -88,33 +86,23 @@ body {
 
 .logo-area {
     padding: 24px 22px;
-
-    border-bottom:
-        1px solid rgba(255,255,255,.10);
+    border-bottom: 1px solid rgba(255,255,255,.10);
 }
 
 .logo-area img {
     width: 145px;
     max-height: 70px;
-
     object-fit: contain;
-
     background: white;
-
     border-radius: 10px;
-
     padding: 5px;
 }
 
 .logo-area span {
     display: block;
-
     margin-top: 9px;
-
     font-size: 11px;
-
     color: rgba(255,255,255,.65);
-
     letter-spacing: .5px;
 }
 
@@ -126,21 +114,17 @@ body {
 .menu a {
     display: flex;
     align-items: center;
-
     gap: 13px;
 
     color: rgba(255,255,255,.75);
-
     text-decoration: none;
 
     padding: 13px 14px;
-
     margin-bottom: 6px;
 
     border-radius: 9px;
 
     font-size: 13px;
-
     font-weight: 600;
 
     transition: .2s;
@@ -159,9 +143,7 @@ body {
 
 .logout {
     padding: 12px;
-
-    border-top:
-        1px solid rgba(255,255,255,.10);
+    border-top: 1px solid rgba(255,255,255,.10);
 }
 
 
@@ -179,8 +161,7 @@ body {
 
     background: white;
 
-    border-bottom:
-        1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 
     display: flex;
     align-items: center;
@@ -196,22 +177,17 @@ body {
 
 .topbar p {
     margin-top: 3px;
-
     font-size: 11px;
-
     color: var(--muted);
 }
 
 .admin-user {
     display: flex;
     align-items: center;
-
     gap: 10px;
 
     font-size: 12px;
-
     font-weight: 700;
-
     color: var(--navy);
 }
 
@@ -222,7 +198,6 @@ body {
     border-radius: 50%;
 
     background: var(--navy);
-
     color: white;
 
     display: flex;
@@ -245,17 +220,13 @@ body {
 
 .page-header h2 {
     color: var(--navy);
-
     font-size: 25px;
-
     font-weight: 800;
 }
 
 .page-header p {
     color: var(--muted);
-
     margin-top: 5px;
-
     font-size: 13px;
 }
 
@@ -267,20 +238,16 @@ body {
 .steps {
     display: flex;
     align-items: center;
-
     margin-bottom: 25px;
 }
 
 .step {
     display: flex;
     align-items: center;
-
     gap: 8px;
 
     font-size: 11px;
-
     font-weight: 700;
-
     color: #9aa5b4;
 }
 
@@ -295,7 +262,6 @@ body {
     justify-content: center;
 
     background: #e8edf3;
-
     color: #7b8794;
 }
 
@@ -357,12 +323,17 @@ body {
 
 
 /* =========================================================
-   PLANES
+   OCULTO
 ========================================================= */
 
 .hidden {
     display: none !important;
 }
+
+
+/* =========================================================
+   PLANES
+========================================================= */
 
 .plan-grid {
     display: grid;
@@ -740,7 +711,7 @@ body {
 
         <img
             src="logo.jpeg"
-            alt="PROFIRMA"
+            alt="PRO-FIRMA"
         >
 
         <span>
@@ -757,10 +728,12 @@ body {
             Inicio
         </a>
 
+
         <a href="ventas.php">
             <i class="fa-solid fa-chart-line"></i>
             Ventas
         </a>
+
 
         <a
             href="solicitudes.php"
@@ -769,6 +742,7 @@ body {
             <i class="fa-solid fa-file-signature"></i>
             Solicitudes
         </a>
+
 
         <a href="reportes.php">
             <i class="fa-solid fa-chart-pie"></i>
@@ -793,8 +767,11 @@ body {
                 font-weight:600;
             "
         >
+
             <i class="fa-solid fa-right-from-bracket"></i>
+
             Cerrar sesión
+
         </a>
 
     </div>
@@ -818,7 +795,7 @@ body {
             </h1>
 
             <p>
-                Gestión interna de PROFIRMA
+                Gestión interna de PRO-FIRMA
             </p>
 
         </div>
@@ -827,7 +804,9 @@ body {
         <div class="admin-user">
 
             <div class="avatar">
+
                 <i class="fa-solid fa-user"></i>
+
             </div>
 
             Administrador
@@ -853,7 +832,9 @@ body {
         </div>
 
 
-        <!-- PASOS -->
+        <!-- ==================================================
+             PASOS
+        =================================================== -->
 
         <div class="steps">
 
@@ -861,18 +842,30 @@ body {
                 class="step active"
                 id="step1"
             >
-                <div class="step-number">1</div>
+
+                <div class="step-number">
+                    1
+                </div>
+
                 Firma
+
             </div>
 
+
             <div class="step-line"></div>
+
 
             <div
                 class="step"
                 id="step2"
             >
-                <div class="step-number">2</div>
+
+                <div class="step-number">
+                    2
+                </div>
+
                 Datos
+
             </div>
 
         </div>
@@ -1203,8 +1196,8 @@ body {
                             Emisión administrativa
                         </strong>
 
-                        Esta emisión se enviará directamente a eNext.
-                        No se procesará ningún pago mediante PayPhone.
+                        Esta solicitud será procesada directamente
+                        desde el panel administrativo de PRO-FIRMA.
 
                     </div>
 
@@ -1252,19 +1245,6 @@ body {
 /* =========================================================
    PLANES
 ========================================================= */
-
-/*
-    Mantenemos EXACTAMENTE los perfiles que ya
-    utiliza la emisión administrativa que está funcionando.
-
-    018 = 15 días
-    001 = 1 mes
-    002 = 1 año
-    005 = 2 años
-    010 = 3 años
-    007 = 4 años
-    013 = 5 años
-*/
 
 const planes = [
 
@@ -1319,7 +1299,6 @@ const planes = [
 
 let planSeleccionado = null;
 let enviando = false;
-
 
 const plansContainer =
     document.getElementById('plansContainer');
@@ -1388,9 +1367,7 @@ function renderPlanes() {
             )
         );
 
-        plansContainer.appendChild(
-            item
-        );
+        plansContainer.appendChild(item);
 
     });
 
@@ -1401,25 +1378,16 @@ function renderPlanes() {
    SELECCIONAR PLAN
 ========================================================= */
 
-function seleccionarPlan(
-    element,
-    plan
-) {
+function seleccionarPlan(element, plan) {
 
     document
         .querySelectorAll('.plan')
         .forEach(item => {
-
-            item.classList.remove(
-                'active'
-            );
-
+            item.classList.remove('active');
         });
 
 
-    element.classList.add(
-        'active'
-    );
+    element.classList.add('active');
 
 
     planSeleccionado = plan;
@@ -1430,8 +1398,7 @@ function seleccionarPlan(
 
 
     summaryPrice.textContent =
-        '$' +
-        plan.precio.toFixed(2);
+        '$' + plan.precio.toFixed(2);
 
 
     selectionSummary.classList.remove(
@@ -1505,7 +1472,7 @@ function mostrarResultado(
 
 
 /* =========================================================
-   ESCAPAR TEXTO
+   SEGURIDAD HTML
 ========================================================= */
 
 function escaparHtml(valor) {
@@ -1522,7 +1489,7 @@ function escaparHtml(valor) {
 
 
 /* =========================================================
-   ENVIAR A ENEXT
+   ENVÍO
 ========================================================= */
 
 firmaForm.addEventListener(
@@ -1577,18 +1544,11 @@ firmaForm.addEventListener(
 
 
         /*
-        -------------------------------------------------------
-        IMPORTANTE
-        -------------------------------------------------------
-        Conservamos "natural" únicamente como valor técnico
-        porque procesar_emision.php ya funciona con este valor.
-
-        No aparece en la interfaz del administrador.
-
-        NO enviamos precio.
-        NO enviamos datos de PayPhone.
-        -------------------------------------------------------
-        */
+         * Este valor se mantiene porque el backend
+         * actual ya funciona con él.
+         *
+         * No es visible en la interfaz.
+         */
 
         const payload = {
 
@@ -1658,15 +1618,13 @@ firmaForm.addEventListener(
         };
 
 
-        /*
-        -------------------------------------------------------
-        CONFIRMACIÓN
-        -------------------------------------------------------
-        */
+        /* =================================================
+           CONFIRMACIÓN
+        ================================================= */
 
         const confirmar = window.confirm(
 
-            'Vas a emitir una firma REAL en eNext.\n\n' +
+            'Vas a emitir una firma REAL.\n\n' +
 
             'Titular: ' +
             payload.nombres +
@@ -1697,7 +1655,8 @@ firmaForm.addEventListener(
         submitButton.disabled = true;
 
         submitText.textContent =
-            'Enviando a eNext...';
+            'Procesando solicitud...';
+
 
         resultMessage.classList.add(
             'hidden'
@@ -1714,11 +1673,13 @@ firmaForm.addEventListener(
                     method: 'POST',
 
                     headers: {
+
                         'Content-Type':
                             'application/json',
 
                         'Accept':
                             'application/json'
+
                     },
 
                     body:
@@ -1736,7 +1697,7 @@ firmaForm.addEventListener(
                 result =
                     await response.json();
 
-            } catch (jsonError) {
+            } catch (errorJson) {
 
                 throw new Error(
                     'El servidor devolvió una respuesta inválida.'
@@ -1752,20 +1713,16 @@ firmaForm.addEventListener(
 
                 throw new Error(
                     result.mensaje ||
-                    'eNext rechazó la solicitud.'
+                    'La solicitud no pudo ser procesada.'
                 );
 
             }
 
 
             /*
-            ---------------------------------------------------
-            ÉXITO
-            ---------------------------------------------------
-            NO mostramos token.
-            NO mostramos enlace biométrico.
-            ---------------------------------------------------
-            */
+             * No mostramos información técnica,
+             * tokens ni enlaces internos.
+             */
 
             const numeroTramite =
                 result.numero_tramite
@@ -1778,18 +1735,10 @@ firmaForm.addEventListener(
             mostrarResultado(
                 'success',
                 'Solicitud enviada correctamente',
-                'La información para continuar el proceso fue enviada al cliente por el medio configurado.' +
+                'La información para continuar el proceso fue enviada al cliente.' +
                 numeroTramite
             );
 
-
-            /*
-            ---------------------------------------------------
-            LIMPIAR DATOS
-            ---------------------------------------------------
-            Conservamos el plan seleccionado.
-            ---------------------------------------------------
-            */
 
             firmaForm.reset();
 
@@ -1801,7 +1750,7 @@ firmaForm.addEventListener(
                 'error',
                 'No se pudo emitir la firma',
                 error.message ||
-                'Ocurrió un error al comunicarse con eNext.'
+                'Ocurrió un error al procesar la solicitud.'
             );
 
 
@@ -1822,7 +1771,7 @@ firmaForm.addEventListener(
 
 
 /* =========================================================
-   INICIAR
+   INICIO
 ========================================================= */
 
 renderPlanes();
@@ -1832,4 +1781,3 @@ renderPlanes();
 
 </body>
 </html>
-
