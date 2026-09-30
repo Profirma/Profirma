@@ -475,6 +475,7 @@ function obtenerPlan(
             color: var(--texto);
         }
 
+
         /* =========================
            MENÚ LATERAL
         ========================== */
@@ -583,6 +584,7 @@ function obtenerPlan(
                 1px solid rgba(255,255,255,.14);
         }
 
+
         /* =========================
            CONTENIDO PRINCIPAL
         ========================== */
@@ -649,6 +651,7 @@ function obtenerPlan(
             padding: 32px 34px 50px;
         }
 
+
         /* =========================
            BIENVENIDA
         ========================== */
@@ -688,6 +691,7 @@ function obtenerPlan(
             font-size: 65px;
             opacity: .15;
         }
+
 
         /* =========================
            TARJETAS
@@ -758,6 +762,7 @@ function obtenerPlan(
             background: #fdecec;
             color: var(--rojo);
         }
+
 
         /* =========================
            PANEL TABLA
@@ -910,6 +915,7 @@ function obtenerPlan(
             padding: 35px 20px;
         }
 
+
         /* =========================
            RESPONSIVE
         ========================== */
@@ -986,6 +992,7 @@ function obtenerPlan(
 
 <body>
 
+
     <!-- MENÚ LATERAL -->
 
     <aside class="sidebar">
@@ -994,12 +1001,19 @@ function obtenerPlan(
 
             <img
                 src="../logo.jpeg"
-                alt="PROFIRMA"
+                alt="PRO-FIRMA"
             >
 
             <div class="logo-text">
-                <h2>PROFIRMA</h2>
-                <span>Administración</span>
+
+                <h2>
+                    PRO-FIRMA
+                </h2>
+
+                <span>
+                    Administración
+                </span>
+
             </div>
 
         </div>
@@ -1013,37 +1027,65 @@ function obtenerPlan(
         <ul class="menu">
 
             <li>
+
                 <a
                     href="index.php"
                     class="active"
                 >
+
                     <i class="fa-solid fa-house"></i>
-                    <span>Inicio</span>
+
+                    <span>
+                        Inicio
+                    </span>
+
                 </a>
+
             </li>
 
 
             <li>
+
                 <a href="ventas.php">
+
                     <i class="fa-solid fa-cart-shopping"></i>
-                    <span>Ventas</span>
+
+                    <span>
+                        Ventas
+                    </span>
+
                 </a>
+
             </li>
 
 
             <li>
-                <a href="#">
+
+                <a href="solicitudes.php">
+
                     <i class="fa-solid fa-file-signature"></i>
-                    <span>Solicitudes</span>
+
+                    <span>
+                        Solicitudes
+                    </span>
+
                 </a>
+
             </li>
 
 
             <li>
+
                 <a href="reportes.php">
+
                     <i class="fa-solid fa-chart-column"></i>
-                    <span>Reportes</span>
+
+                    <span>
+                        Reportes
+                    </span>
+
                 </a>
+
             </li>
 
         </ul>
@@ -1112,6 +1154,7 @@ function obtenerPlan(
 
         <section class="content">
 
+
             <!-- BIENVENIDA -->
 
             <div class="welcome">
@@ -1168,11 +1211,13 @@ function obtenerPlan(
                         </span>
 
                         <h2>
+
                             <?= escapar(
                                 formatearDinero(
                                     $ventasHoy
                                 )
                             ) ?>
+
                         </h2>
 
                     </div>
@@ -1196,11 +1241,13 @@ function obtenerPlan(
                         </span>
 
                         <h2>
+
                             <?= escapar(
                                 formatearDinero(
                                     $ventasMes
                                 )
                             ) ?>
+
                         </h2>
 
                     </div>
@@ -1224,9 +1271,11 @@ function obtenerPlan(
                         </span>
 
                         <h2>
+
                             <?= escapar(
                                 $totalSolicitudes
                             ) ?>
+
                         </h2>
 
                     </div>
@@ -1250,9 +1299,11 @@ function obtenerPlan(
                         </span>
 
                         <h2>
+
                             <?= escapar(
                                 $totalErrores
                             ) ?>
+
                         </h2>
 
                     </div>
@@ -1310,14 +1361,37 @@ function obtenerPlan(
 
                             <tr>
 
-                                <th>Fecha</th>
-                                <th>Cliente</th>
-                                <th>Cédula</th>
-                                <th>Plan</th>
-                                <th>Valor</th>
-                                <th>PayPhone</th>
-                                <th>eNext</th>
-                                <th>Acción</th>
+                                <th>
+                                    Fecha
+                                </th>
+
+                                <th>
+                                    Cliente
+                                </th>
+
+                                <th>
+                                    Cédula
+                                </th>
+
+                                <th>
+                                    Plan
+                                </th>
+
+                                <th>
+                                    Valor
+                                </th>
+
+                                <th>
+                                    Pago
+                                </th>
+
+                                <th>
+                                    Emisión
+                                </th>
+
+                                <th>
+                                    Acción
+                                </th>
 
                             </tr>
 
@@ -1334,8 +1408,10 @@ function obtenerPlan(
                                     colspan="8"
                                     class="empty-table"
                                 >
+
                                     No existen compras aprobadas
                                     para mostrar todavía.
+
                                 </td>
 
                             </tr>
@@ -1555,6 +1631,7 @@ function obtenerPlan(
                 </div>
 
             </div>
+
 
         </section>
 
