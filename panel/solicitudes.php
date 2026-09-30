@@ -357,89 +357,6 @@ body {
 
 
 /* =========================================================
-   PERSONA
-========================================================= */
-
-.person-type-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 16px;
-}
-
-.person-card {
-    border: 2px solid var(--border);
-
-    border-radius: 13px;
-
-    padding: 23px;
-
-    cursor: pointer;
-
-    background: white;
-
-    transition: .2s;
-
-    display: flex;
-    align-items: center;
-
-    gap: 16px;
-}
-
-.person-card:hover {
-    border-color: #9fc1df;
-    transform: translateY(-1px);
-}
-
-.person-card.active {
-    border-color: var(--navy);
-    background: #f3f8fc;
-}
-
-.person-icon {
-    width: 50px;
-    height: 50px;
-
-    border-radius: 12px;
-
-    background: #edf4fa;
-
-    color: var(--navy);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 21px;
-}
-
-.person-card.active .person-icon {
-    background: var(--navy);
-    color: white;
-}
-
-.person-card strong {
-    display: block;
-
-    color: var(--navy);
-
-    font-size: 14px;
-}
-
-.person-card span {
-    display: block;
-
-    color: var(--muted);
-
-    margin-top: 4px;
-
-    font-size: 11px;
-}
-
-
-/* =========================================================
    PLANES
 ========================================================= */
 
@@ -794,7 +711,6 @@ body {
         padding: 20px 15px;
     }
 
-    .person-type-grid,
     .form-grid,
     .form-grid.three {
         grid-template-columns: 1fr;
@@ -930,6 +846,10 @@ body {
                 Emitir firma electrónica
             </h2>
 
+            <p>
+                Emisión administrativa directa.
+            </p>
+
         </div>
 
 
@@ -942,7 +862,7 @@ body {
                 id="step1"
             >
                 <div class="step-number">1</div>
-                Tipo de persona
+                Firma
             </div>
 
             <div class="step-line"></div>
@@ -952,16 +872,6 @@ body {
                 id="step2"
             >
                 <div class="step-number">2</div>
-                Firma
-            </div>
-
-            <div class="step-line"></div>
-
-            <div
-                class="step"
-                id="step3"
-            >
-                <div class="step-number">3</div>
                 Datos
             </div>
 
@@ -969,82 +879,11 @@ body {
 
 
         <!-- ==================================================
-             TIPO DE PERSONA
-        =================================================== -->
-
-        <section class="card">
-
-            <div class="card-title">
-                Primero elige el tipo de persona
-            </div>
-
-            <div class="card-description">
-                Selecciona para quién se emitirá la firma.
-            </div>
-
-
-            <div class="person-type-grid">
-
-
-                <div
-                    class="person-card"
-                    data-type="natural"
-                >
-
-                    <div class="person-icon">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            Persona Natural
-                        </strong>
-
-                        <span>
-                            Firma electrónica para persona natural.
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="person-card"
-                    data-type="juridica"
-                >
-
-                    <div class="person-icon">
-                        <i class="fa-solid fa-building"></i>
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            Persona Jurídica
-                        </strong>
-
-                        <span>
-                            Firma electrónica para empresa.
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================================================
              PLANES
         =================================================== -->
 
         <section
-            class="card hidden"
+            class="card"
             id="plansSection"
         >
 
@@ -1052,10 +891,8 @@ body {
                 Selecciona la firma
             </div>
 
-            <div
-                class="card-description"
-                id="plansDescription"
-            >
+            <div class="card-description">
+                Selecciona la vigencia de la firma electrónica.
             </div>
 
 
@@ -1365,7 +1202,9 @@ body {
                         <strong>
                             Emisión administrativa
                         </strong>
-                        
+
+                        Esta emisión se enviará directamente a eNext.
+                        No se procesará ningún pago mediante PayPhone.
 
                     </div>
 
@@ -1415,7 +1254,8 @@ body {
 ========================================================= */
 
 /*
-    Los perfiles eNext confirmados son:
+    Mantenemos EXACTAMENTE los perfiles que ya
+    utiliza la emisión administrativa que está funcionando.
 
     018 = 15 días
     001 = 1 mes
@@ -1426,77 +1266,63 @@ body {
     013 = 5 años
 */
 
-const planes = {
+const planes = [
 
-    natural: [
+    {
+        nombre: '15 Días',
+        precio: 8,
+        perfil: '018'
+    },
 
-        {
-            nombre: '15 Días',
-            precio: 8,
-            perfil: '018'
-        },
+    {
+        nombre: '1 Mes',
+        precio: 12,
+        perfil: '001'
+    },
 
-        {
-            nombre: '1 Mes',
-            precio: 12,
-            perfil: '001'
-        },
+    {
+        nombre: '1 Año',
+        precio: 20,
+        perfil: '002'
+    },
 
-        {
-            nombre: '1 Año',
-            precio: 20,
-            perfil: '002'
-        },
+    {
+        nombre: '2 Años',
+        precio: 30,
+        perfil: '005'
+    },
 
-        {
-            nombre: '2 Años',
-            precio: 30,
-            perfil: '005'
-        },
+    {
+        nombre: '3 Años',
+        precio: 40,
+        perfil: '010'
+    },
 
-        {
-            nombre: '3 Años',
-            precio: 40,
-            perfil: '010'
-        },
+    {
+        nombre: '4 Años',
+        precio: 50,
+        perfil: '007'
+    },
 
-        {
-            nombre: '4 Años',
-            precio: 50,
-            perfil: '007'
-        },
+    {
+        nombre: '5 Años',
+        precio: 55,
+        perfil: '013'
+    }
 
-        {
-            nombre: '5 Años',
-            precio: 55,
-            perfil: '013'
-        }
-
-    ]
-
-};
+];
 
 
 /* =========================================================
    VARIABLES
 ========================================================= */
 
-let tipoSeleccionado = '';
 let planSeleccionado = null;
 let enviando = false;
 
 
-const personCards =
-    document.querySelectorAll('.person-card');
-
-const plansSection =
-    document.getElementById('plansSection');
-
 const plansContainer =
     document.getElementById('plansContainer');
-
-const plansDescription =
-    document.getElementById('plansDescription');
 
 const selectionSummary =
     document.getElementById('selectionSummary');
@@ -1524,144 +1350,19 @@ const submitText =
 
 
 /* =========================================================
-   TIPO DE PERSONA
+   MOSTRAR PLANES
 ========================================================= */
 
-personCards.forEach(card => {
-
-    card.addEventListener('click', () => {
-
-        personCards.forEach(item => {
-            item.classList.remove('active');
-        });
-
-        card.classList.add('active');
-
-
-        tipoSeleccionado =
-            card.dataset.type;
-
-
-        planSeleccionado = null;
-
-
-        selectionSummary.classList.add(
-            'hidden'
-        );
-
-        formSection.classList.add(
-            'hidden'
-        );
-
-        resultMessage.classList.add(
-            'hidden'
-        );
-
-
-        document
-            .getElementById('step3')
-            .classList.remove('active');
-
-
-        /*
-        -------------------------------------------------------
-        PERSONA JURÍDICA
-        -------------------------------------------------------
-        No la enviamos con el formulario de Persona Natural.
-        eNext requiere información adicional para PJ.
-        -------------------------------------------------------
-        */
-
-        if (tipoSeleccionado === 'juridica') {
-
-            plansSection.classList.remove(
-                'hidden'
-            );
-
-
-            plansContainer.innerHTML = '';
-
-
-            plansDescription.innerHTML = `
-
-                <div
-                    style="
-                        padding:15px;
-                        background:#fff9e8;
-                        border:1px solid #f0dfad;
-                        border-radius:10px;
-                        color:#715b1b;
-                        line-height:1.6;
-                    "
-                >
-
-                    <strong>
-                        Persona Jurídica
-                    </strong>
-
-                    <br>
-
-                    La emisión de Persona Jurídica se configurará
-                    con su formulario específico antes de habilitarla.
-
-                </div>
-
-            `;
-
-
-            document
-                .getElementById('step2')
-                .classList.add('active');
-
-
-            return;
-        }
-
-
-        /*
-        -------------------------------------------------------
-        PERSONA NATURAL
-        -------------------------------------------------------
-        */
-
-        renderPlanes('natural');
-
-
-        plansSection.classList.remove(
-            'hidden'
-        );
-
-
-        document
-            .getElementById('step2')
-            .classList.add('active');
-
-    });
-
-});
-
-
-/* =========================================================
-   MOSTRAR PLANES NATURAL
-========================================================= */
-
-function renderPlanes(tipo) {
+function renderPlanes() {
 
     plansContainer.innerHTML = '';
 
-
-    plansDescription.textContent =
-        'Selecciona la vigencia de la firma electrónica.';
-
-
-    planes[tipo].forEach(plan => {
+    planes.forEach(plan => {
 
         const item =
             document.createElement('div');
 
-
         item.className = 'plan';
-
 
         item.innerHTML = `
 
@@ -1679,7 +1380,6 @@ function renderPlanes(tipo) {
 
         `;
 
-
         item.addEventListener(
             'click',
             () => seleccionarPlan(
@@ -1687,7 +1387,6 @@ function renderPlanes(tipo) {
                 plan
             )
         );
-
 
         plansContainer.appendChild(
             item
@@ -1727,7 +1426,6 @@ function seleccionarPlan(
 
 
     summaryPlan.textContent =
-        'Persona Natural · ' +
         plan.nombre;
 
 
@@ -1752,7 +1450,7 @@ function seleccionarPlan(
 
 
     document
-        .getElementById('step3')
+        .getElementById('step2')
         .classList.add('active');
 
 
@@ -1839,18 +1537,6 @@ firmaForm.addEventListener(
         }
 
 
-        if (tipoSeleccionado !== 'natural') {
-
-            mostrarResultado(
-                'error',
-                'Emisión no disponible',
-                'Por ahora la emisión directa está habilitada únicamente para Persona Natural.'
-            );
-
-            return;
-        }
-
-
         if (!planSeleccionado) {
 
             mostrarResultado(
@@ -1892,9 +1578,14 @@ firmaForm.addEventListener(
 
         /*
         -------------------------------------------------------
-        DATOS PARA EL BACKEND
+        IMPORTANTE
         -------------------------------------------------------
-        NO enviamos precio a eNext.
+        Conservamos "natural" únicamente como valor técnico
+        porque procesar_emision.php ya funciona con este valor.
+
+        No aparece en la interfaz del administrador.
+
+        NO enviamos precio.
         NO enviamos datos de PayPhone.
         -------------------------------------------------------
         */
@@ -1971,9 +1662,6 @@ firmaForm.addEventListener(
         -------------------------------------------------------
         CONFIRMACIÓN
         -------------------------------------------------------
-        Importante porque después de aceptar se crea
-        una solicitud REAL en eNext.
-        -------------------------------------------------------
         */
 
         const confirmar = window.confirm(
@@ -2006,13 +1694,10 @@ firmaForm.addEventListener(
 
         enviando = true;
 
-
         submitButton.disabled = true;
-
 
         submitText.textContent =
             'Enviando a eNext...';
-
 
         resultMessage.classList.add(
             'hidden'
@@ -2084,10 +1769,10 @@ firmaForm.addEventListener(
 
             const numeroTramite =
                 result.numero_tramite
-                ? ' Trámite: ' +
-                  result.numero_tramite +
-                  '.'
-                : '';
+                    ? ' Trámite: ' +
+                      result.numero_tramite +
+                      '.'
+                    : '';
 
 
             mostrarResultado(
@@ -2100,10 +1785,9 @@ firmaForm.addEventListener(
 
             /*
             ---------------------------------------------------
-            LIMPIAR DATOS DEL CLIENTE
+            LIMPIAR DATOS
             ---------------------------------------------------
-            Conservamos persona y plan seleccionados para
-            facilitar una nueva emisión del mismo tipo.
+            Conservamos el plan seleccionado.
             ---------------------------------------------------
             */
 
@@ -2126,9 +1810,7 @@ firmaForm.addEventListener(
 
             enviando = false;
 
-
             submitButton.disabled = false;
-
 
             submitText.textContent =
                 'Emitir firma';
@@ -2138,8 +1820,16 @@ firmaForm.addEventListener(
     }
 );
 
+
+/* =========================================================
+   INICIAR
+========================================================= */
+
+renderPlanes();
+
 </script>
 
 
 </body>
 </html>
+
