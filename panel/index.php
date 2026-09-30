@@ -546,7 +546,7 @@ if (empty($_SESSION['profirma_admin'])) {
             </li>
 
             <li>
-                <a href="#">
+                <a href="logout.php">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span>Ventas</span>
                 </a>
