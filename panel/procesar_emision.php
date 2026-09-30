@@ -930,11 +930,6 @@ body {
                 Emitir firma electrónica
             </h2>
 
-            <p>
-                Emisión administrativa directa mediante eNext.
-                No utiliza PayPhone.
-            </p>
-
         </div>
 
 
