@@ -2,6 +2,5 @@
   "require": {
     "ext-pdo": "*",
     "ext-pdo_pgsql": "*"
-    "dompdf/dompdf": "^3.1"
   }
 }
