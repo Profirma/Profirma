@@ -1,35 +1,468 @@
 <?php
+
 session_start();
 
 if (empty($_SESSION['profirma_admin'])) {
     header('Location: login.php');
     exit;
 }
-?>
-<?php
+
 /*
 |--------------------------------------------------------------------------
 | PROFIRMA - PANEL ADMINISTRATIVO
 |--------------------------------------------------------------------------
-| Primera versión: DISEÑO VISUAL
-| Todavía NO consulta PostgreSQL.
-| NO modifica PayPhone ni eNext.
+| Panel conectado a PostgreSQL.
+| SOLO LEE información de la tabla solicitudes.
+| NO modifica PayPhone.
+| NO modifica eNext.
 |--------------------------------------------------------------------------
 */
+
+date_default_timezone_set('America/Guayaquil');
+
+
+/*
+|--------------------------------------------------------------------------
+| VALORES INICIALES
+|--------------------------------------------------------------------------
+*/
+
+$ventasHoy = 0;
+$ventasMes = 0;
+$totalSolicitudes = 0;
+$totalErrores = 0;
+
+$ultimasCompras = [];
+
+$errorBaseDatos = '';
+
+
+/*
+|--------------------------------------------------------------------------
+| CONEXIÓN POSTGRESQL
+|--------------------------------------------------------------------------
+*/
+
+$databaseUrl = trim((string) getenv('DATABASE_URL'));
+
+if ($databaseUrl === '') {
+
+    $errorBaseDatos =
+        'DATABASE_URL no está configurada en Railway.';
+
+} else {
+
+    try {
+
+        $db = parse_url($databaseUrl);
+
+        if (
+            $db === false ||
+            !isset($db['host'], $db['path'])
+        ) {
+            throw new RuntimeException(
+                'DATABASE_URL no tiene un formato válido.'
+            );
+        }
+
+        $dbHost = (string) $db['host'];
+
+        $dbPort =
+            isset($db['port'])
+                ? (int) $db['port']
+                : 5432;
+
+        $dbName =
+            ltrim(
+                (string) $db['path'],
+                '/'
+            );
+
+        $dbUser =
+            isset($db['user'])
+                ? urldecode((string) $db['user'])
+                : '';
+
+        $dbPass =
+            isset($db['pass'])
+                ? urldecode((string) $db['pass'])
+                : '';
+
+        $pdo = new PDO(
+            "pgsql:host={$dbHost};port={$dbPort};dbname={$dbName}",
+            $dbUser,
+            $dbPass,
+            [
+                PDO::ATTR_ERRMODE =>
+                    PDO::ERRMODE_EXCEPTION,
+
+                PDO::ATTR_DEFAULT_FETCH_MODE =>
+                    PDO::FETCH_ASSOC,
+
+                PDO::ATTR_EMULATE_PREPARES =>
+                    false
+            ]
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VENTAS DE HOY
+        |--------------------------------------------------------------------------
+        |
+        | Solo contamos dinero confirmado por PayPhone.
+        |
+        */
+
+        $stmt = $pdo->query(
+            "
+            SELECT
+                COALESCE(
+                    SUM(monto_centavos),
+                    0
+                ) AS total
+            FROM solicitudes
+            WHERE
+                payphone_status = 'Approved'
+                AND created_at = CURRENT_DATE
+            "
+        );
+
+        $resultado =
+            $stmt->fetch();
+
+        $ventasHoy =
+            (int) (
+                $resultado['total']
+                ?? 0
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VENTAS DEL MES
+        |--------------------------------------------------------------------------
+        */
+
+        $stmt = $pdo->query(
+            "
+            SELECT
+                COALESCE(
+                    SUM(monto_centavos),
+                    0
+                ) AS total
+            FROM solicitudes
+            WHERE
+                payphone_status = 'Approved'
+                AND created_at >= DATE_TRUNC(
+                    'month',
+                    CURRENT_DATE
+                )::date
+                AND created_at <
+                    (
+                        DATE_TRUNC(
+                            'month',
+                            CURRENT_DATE
+                        )
+                        + INTERVAL '1 month'
+                    )::date
+            "
+        );
+
+        $resultado =
+            $stmt->fetch();
+
+        $ventasMes =
+            (int) (
+                $resultado['total']
+                ?? 0
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL DE SOLICITUDES
+        |--------------------------------------------------------------------------
+        */
+
+        $stmt = $pdo->query(
+            "
+            SELECT COUNT(*) AS total
+            FROM solicitudes
+            "
+        );
+
+        $resultado =
+            $stmt->fetch();
+
+        $totalSolicitudes =
+            (int) (
+                $resultado['total']
+                ?? 0
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SOLICITUDES CON ERROR
+        |--------------------------------------------------------------------------
+        */
+
+        $stmt = $pdo->query(
+            "
+            SELECT COUNT(*) AS total
+            FROM solicitudes
+            WHERE estado = 'error'
+            "
+        );
+
+        $resultado =
+            $stmt->fetch();
+
+        $totalErrores =
+            (int) (
+                $resultado['total']
+                ?? 0
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ÚLTIMAS COMPRAS
+        |--------------------------------------------------------------------------
+        |
+        | Mostramos únicamente pagos aprobados.
+        |
+        | Los datos personales están guardados dentro
+        | de datos_solicitud.
+        |
+        */
+
+        $stmt = $pdo->query(
+            "
+            SELECT
+                id,
+                client_transaction_id,
+                estado,
+                monto_centavos,
+                datos_solicitud,
+                payphone_status,
+                enext_procesado,
+                created_at
+            FROM solicitudes
+            WHERE payphone_status = 'Approved'
+            ORDER BY id DESC
+            LIMIT 10
+            "
+        );
+
+        $ultimasCompras =
+            $stmt->fetchAll();
+
+
+    } catch (Throwable $e) {
+
+        error_log(
+            'PROFIRMA / Panel PostgreSQL: ' .
+            $e->getMessage()
+        );
+
+        $errorBaseDatos =
+            'No fue posible cargar la información de PostgreSQL.';
+    }
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| FUNCIONES DEL PANEL
+|--------------------------------------------------------------------------
+*/
+
+function escapar(
+    mixed $valor
+): string {
+
+    return htmlspecialchars(
+        (string) $valor,
+        ENT_QUOTES,
+        'UTF-8'
+    );
+}
+
+
+function leerDatosSolicitud(
+    mixed $datos
+): array {
+
+    if (is_array($datos)) {
+        return $datos;
+    }
+
+    if (
+        $datos === null ||
+        $datos === ''
+    ) {
+        return [];
+    }
+
+    $resultado =
+        json_decode(
+            (string) $datos,
+            true
+        );
+
+    return is_array($resultado)
+        ? $resultado
+        : [];
+}
+
+
+function formatearDinero(
+    int $centavos
+): string {
+
+    return '$' .
+        number_format(
+            $centavos / 100,
+            2,
+            '.',
+            ','
+        );
+}
+
+
+function formatearFecha(
+    mixed $fecha
+): string {
+
+    if (
+        $fecha === null ||
+        trim((string) $fecha) === ''
+    ) {
+        return '-';
+    }
+
+    try {
+
+        $objetoFecha =
+            new DateTime(
+                (string) $fecha
+            );
+
+        return $objetoFecha->format(
+            'd/m/Y'
+        );
+
+    } catch (Throwable $e) {
+
+        return escapar($fecha);
+    }
+}
+
+
+function obtenerNombreCliente(
+    array $datos
+): string {
+
+    $nombres =
+        trim(
+            (string) (
+                $datos['nombres']
+                ?? $datos['nombre']
+                ?? ''
+            )
+        );
+
+    $apellidos =
+        trim(
+            (string) (
+                $datos['apellidos']
+                ?? $datos['apellido']
+                ?? ''
+            )
+        );
+
+    $nombreCompleto =
+        trim(
+            $nombres . ' ' . $apellidos
+        );
+
+    if ($nombreCompleto === '') {
+        return 'Sin nombre';
+    }
+
+    return $nombreCompleto;
+}
+
+
+function obtenerCorreo(
+    array $datos
+): string {
+
+    return trim(
+        (string) (
+            $datos['correo']
+            ?? $datos['email']
+            ?? ''
+        )
+    );
+}
+
+
+function obtenerDocumento(
+    array $datos
+): string {
+
+    return trim(
+        (string) (
+            $datos['cedula']
+            ?? $datos['ruc']
+            ?? $datos['documento']
+            ?? ''
+        )
+    );
+}
+
+
+function obtenerPlan(
+    array $datos
+): string {
+
+    return trim(
+        (string) (
+            $datos['vigencia']
+            ?? $datos['plan']
+            ?? ''
+        )
+    );
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Panel Administrativo | PRO-FIRMA</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Panel Administrativo | PRO-FIRMA
+    </title>
 
     <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
 
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -66,11 +499,13 @@ if (empty($_SESSION['profirma_admin'])) {
             left: 0;
             width: 260px;
             height: 100vh;
+
             background: linear-gradient(
                 180deg,
                 var(--azul) 0%,
                 var(--azul-oscuro) 100%
             );
+
             color: white;
             padding: 28px 18px;
             z-index: 100;
@@ -81,7 +516,9 @@ if (empty($_SESSION['profirma_admin'])) {
             align-items: center;
             gap: 12px;
             padding: 0 10px 28px;
-            border-bottom: 1px solid rgba(255,255,255,.14);
+
+            border-bottom:
+                1px solid rgba(255,255,255,.14);
         }
 
         .logo-area img {
@@ -155,7 +592,9 @@ if (empty($_SESSION['profirma_admin'])) {
             color: rgba(255,255,255,.80);
             text-decoration: none;
             padding: 14px;
-            border-top: 1px solid rgba(255,255,255,.14);
+
+            border-top:
+                1px solid rgba(255,255,255,.14);
         }
 
         /* =========================
@@ -171,9 +610,11 @@ if (empty($_SESSION['profirma_admin'])) {
             height: 76px;
             background: white;
             border-bottom: 1px solid var(--borde);
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             padding: 0 34px;
         }
 
@@ -200,6 +641,7 @@ if (empty($_SESSION['profirma_admin'])) {
             border-radius: 50%;
             background: var(--azul);
             color: white;
+
             display: flex;
             align-items: center;
             justify-content: center;
@@ -231,13 +673,18 @@ if (empty($_SESSION['profirma_admin'])) {
                 var(--azul),
                 #0b5597
             );
+
             border-radius: 18px;
             padding: 30px 34px;
             color: white;
+
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 12px 30px rgba(7,57,107,.16);
+
+            box-shadow:
+                0 12px 30px rgba(7,57,107,.16);
+
             margin-bottom: 28px;
         }
 
@@ -272,10 +719,13 @@ if (empty($_SESSION['profirma_admin'])) {
             border: 1px solid var(--borde);
             border-radius: 15px;
             padding: 22px;
+
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 5px 18px rgba(18,38,63,.05);
+
+            box-shadow:
+                0 5px 18px rgba(18,38,63,.05);
         }
 
         .card-info span {
@@ -295,9 +745,11 @@ if (empty($_SESSION['profirma_admin'])) {
             width: 52px;
             height: 52px;
             border-radius: 13px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             font-size: 21px;
         }
 
@@ -330,14 +782,18 @@ if (empty($_SESSION['profirma_admin'])) {
             border: 1px solid var(--borde);
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 5px 18px rgba(18,38,63,.05);
+
+            box-shadow:
+                0 5px 18px rgba(18,38,63,.05);
         }
 
         .panel-header {
             padding: 21px 24px;
+
             display: flex;
             justify-content: space-between;
             align-items: center;
+
             border-bottom: 1px solid var(--borde);
         }
 
@@ -431,22 +887,33 @@ if (empty($_SESSION['profirma_admin'])) {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+
             border: 1px solid var(--borde);
             background: white;
+
             padding: 7px 10px;
             border-radius: 7px;
+
             color: var(--azul);
             cursor: pointer;
         }
 
-        .demo-note {
-            margin-top: 18px;
+        .database-error {
+            margin-bottom: 18px;
             padding: 13px 16px;
-            background: #fff9e8;
-            border: 1px solid #f4df9b;
-            color: #7b641d;
+
+            background: #fdeaea;
+            border: 1px solid #f3bcbc;
+            color: #9f2727;
+
             border-radius: 10px;
             font-size: 12px;
+        }
+
+        .empty-table {
+            text-align: center;
+            color: var(--texto-suave);
+            padding: 35px 20px;
         }
 
         /* =========================
@@ -454,12 +921,15 @@ if (empty($_SESSION['profirma_admin'])) {
         ========================== */
 
         @media (max-width: 1100px) {
+
             .cards {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns:
+                    repeat(2, 1fr);
             }
         }
 
         @media (max-width: 760px) {
+
             .sidebar {
                 width: 78px;
                 padding: 25px 10px;
@@ -515,33 +985,49 @@ if (empty($_SESSION['profirma_admin'])) {
                 padding: 0 18px;
             }
         }
+
     </style>
+
 </head>
 
 <body>
 
     <!-- MENÚ LATERAL -->
+
     <aside class="sidebar">
 
         <div class="logo-area">
-            <img src="../logo.jpeg" alt="PROFIRMA">
+
+            <img
+                src="../logo.jpeg"
+                alt="PROFIRMA"
+            >
 
             <div class="logo-text">
                 <h2>PROFIRMA</h2>
                 <span>Administración</span>
             </div>
+
         </div>
 
-        <div class="menu-title">MENÚ PRINCIPAL</div>
+
+        <div class="menu-title">
+            MENÚ PRINCIPAL
+        </div>
+
 
         <ul class="menu">
 
             <li>
-                <a href="#" class="active">
+                <a
+                    href="#"
+                    class="active"
+                >
                     <i class="fa-solid fa-house"></i>
                     <span>Inicio</span>
                 </a>
             </li>
+
 
             <li>
                 <a href="#">
@@ -550,12 +1036,14 @@ if (empty($_SESSION['profirma_admin'])) {
                 </a>
             </li>
 
+
             <li>
                 <a href="#">
                     <i class="fa-solid fa-file-signature"></i>
                     <span>Solicitudes</span>
                 </a>
             </li>
+
 
             <li>
                 <a href="#">
@@ -566,129 +1054,268 @@ if (empty($_SESSION['profirma_admin'])) {
 
         </ul>
 
+
         <div class="logout">
+
             <a href="logout.php">
+
                 <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Cerrar sesión</span>
+
+                <span>
+                    Cerrar sesión
+                </span>
+
             </a>
+
         </div>
 
     </aside>
 
+
     <!-- CONTENIDO -->
+
     <main class="main">
 
         <header class="topbar">
 
             <div class="topbar-left">
-                <h3>Panel Administrativo</h3>
-                <p>Gestión interna de PROFIRMA</p>
+
+                <h3>
+                    Panel Administrativo
+                </h3>
+
+                <p>
+                    Gestión interna de PROFIRMA
+                </p>
+
             </div>
 
+
             <div class="admin-user">
+
                 <div class="admin-circle">
+
                     <i class="fa-solid fa-user-shield"></i>
+
                 </div>
 
                 <div>
-                    <strong>Administrador</strong>
-                    <span>PROFIRMA</span>
+
+                    <strong>
+                        Administrador
+                    </strong>
+
+                    <span>
+                        PROFIRMA
+                    </span>
+
                 </div>
+
             </div>
 
         </header>
 
+
         <section class="content">
 
             <!-- BIENVENIDA -->
+
             <div class="welcome">
 
                 <div>
-                    <h1>Bienvenido a PROFIRMA</h1>
+
+                    <h1>
+                        Bienvenido a PROFIRMA
+                    </h1>
+
                     <p>
                         Consulta las ventas, solicitudes y operaciones
                         realizadas desde la plataforma.
                     </p>
+
                 </div>
+
 
                 <div class="welcome-icon">
+
                     <i class="fa-solid fa-file-signature"></i>
+
                 </div>
 
             </div>
+
+
+            <?php if ($errorBaseDatos !== ''): ?>
+
+                <div class="database-error">
+
+                    <strong>
+                        Base de datos:
+                    </strong>
+
+                    <?= escapar($errorBaseDatos) ?>
+
+                </div>
+
+            <?php endif; ?>
+
 
             <!-- TARJETAS -->
+
             <div class="cards">
 
+
                 <div class="card">
+
                     <div class="card-info">
-                        <span>Ventas de hoy</span>
-                        <h2>$48.00</h2>
+
+                        <span>
+                            Ventas de hoy
+                        </span>
+
+                        <h2>
+                            <?= escapar(
+                                formatearDinero(
+                                    $ventasHoy
+                                )
+                            ) ?>
+                        </h2>
+
                     </div>
+
 
                     <div class="card-icon icon-green">
+
                         <i class="fa-solid fa-dollar-sign"></i>
+
                     </div>
+
                 </div>
 
+
                 <div class="card">
+
                     <div class="card-info">
-                        <span>Ventas del mes</span>
-                        <h2>$348.00</h2>
+
+                        <span>
+                            Ventas del mes
+                        </span>
+
+                        <h2>
+                            <?= escapar(
+                                formatearDinero(
+                                    $ventasMes
+                                )
+                            ) ?>
+                        </h2>
+
                     </div>
+
 
                     <div class="card-icon icon-blue">
+
                         <i class="fa-solid fa-chart-line"></i>
+
                     </div>
+
                 </div>
 
+
                 <div class="card">
+
                     <div class="card-info">
-                        <span>Solicitudes</span>
-                        <h2>18</h2>
+
+                        <span>
+                            Solicitudes
+                        </span>
+
+                        <h2>
+                            <?= escapar(
+                                $totalSolicitudes
+                            ) ?>
+                        </h2>
+
                     </div>
+
 
                     <div class="card-icon icon-yellow">
+
                         <i class="fa-solid fa-file-lines"></i>
+
                     </div>
+
                 </div>
 
+
                 <div class="card">
+
                     <div class="card-info">
-                        <span>Con errores</span>
-                        <h2>1</h2>
+
+                        <span>
+                            Con errores
+                        </span>
+
+                        <h2>
+                            <?= escapar(
+                                $totalErrores
+                            ) ?>
+                        </h2>
+
                     </div>
 
+
                     <div class="card-icon icon-red">
+
                         <i class="fa-solid fa-triangle-exclamation"></i>
+
                     </div>
+
                 </div>
 
             </div>
 
+
             <!-- ÚLTIMAS COMPRAS -->
+
             <div class="panel">
 
                 <div class="panel-header">
 
                     <div>
-                        <h3>Últimas compras</h3>
-                        <p>Actividad reciente de la plataforma PROFIRMA</p>
+
+                        <h3>
+                            Últimas compras
+                        </h3>
+
+                        <p>
+                            Actividad reciente de la plataforma PROFIRMA
+                        </p>
+
                     </div>
 
-                    <button class="report-button">
+
+                    <button
+                        class="report-button"
+                        type="button"
+                    >
+
                         <i class="fa-solid fa-chart-column"></i>
+
                         Ver reportes
+
                     </button>
 
                 </div>
+
 
                 <div class="table-container">
 
                     <table>
 
                         <thead>
+
                             <tr>
+
                                 <th>Fecha</th>
                                 <th>Cliente</th>
                                 <th>Cédula</th>
@@ -697,106 +1324,235 @@ if (empty($_SESSION['profirma_admin'])) {
                                 <th>PayPhone</th>
                                 <th>eNext</th>
                                 <th>Acción</th>
+
                             </tr>
+
                         </thead>
+
 
                         <tbody>
 
-                            <tr>
-                                <td>30/09/2026</td>
-
-                                <td class="client">
-                                    <strong>Cliente de ejemplo</strong>
-                                    <span>cliente@ejemplo.com</span>
-                                </td>
-
-                                <td>XXXXXXXXXX</td>
-                                <td>15 Días</td>
-                                <td><strong>$8.00</strong></td>
-
-                                <td>
-                                    <span class="status approved">
-                                        Aprobado
-                                    </span>
-                                </td>
-
-                                <td>
-                                    <span class="status processed">
-                                        Procesado
-                                    </span>
-                                </td>
-
-                                <td>
-                                    <button class="view-button">
-                                        <i class="fa-solid fa-eye"></i>
-                                        Ver
-                                    </button>
-                                </td>
-                            </tr>
+                        <?php if (empty($ultimasCompras)): ?>
 
                             <tr>
-                                <td>30/09/2026</td>
 
-                                <td class="client">
-                                    <strong>Cliente de ejemplo</strong>
-                                    <span>cliente@ejemplo.com</span>
+                                <td
+                                    colspan="8"
+                                    class="empty-table"
+                                >
+                                    No existen compras aprobadas
+                                    para mostrar todavía.
                                 </td>
 
-                                <td>XXXXXXXXXX</td>
-                                <td>1 Año</td>
-                                <td><strong>$20.00</strong></td>
-
-                                <td>
-                                    <span class="status approved">
-                                        Aprobado
-                                    </span>
-                                </td>
-
-                                <td>
-                                    <span class="status processed">
-                                        Procesado
-                                    </span>
-                                </td>
-
-                                <td>
-                                    <button class="view-button">
-                                        <i class="fa-solid fa-eye"></i>
-                                        Ver
-                                    </button>
-                                </td>
                             </tr>
 
-                            <tr>
-                                <td>29/09/2026</td>
+                        <?php else: ?>
 
-                                <td class="client">
-                                    <strong>Cliente de ejemplo</strong>
-                                    <span>cliente@ejemplo.com</span>
-                                </td>
 
-                                <td>XXXXXXXXXX</td>
-                                <td>2 Años</td>
-                                <td><strong>$30.00</strong></td>
+                            <?php foreach ($ultimasCompras as $compra): ?>
 
-                                <td>
-                                    <span class="status approved">
-                                        Aprobado
-                                    </span>
-                                </td>
+                                <?php
 
-                                <td>
-                                    <span class="status pending">
-                                        Pendiente
-                                    </span>
-                                </td>
+                                $datos =
+                                    leerDatosSolicitud(
+                                        $compra['datos_solicitud']
+                                        ?? null
+                                    );
 
-                                <td>
-                                    <button class="view-button">
-                                        <i class="fa-solid fa-eye"></i>
-                                        Ver
-                                    </button>
-                                </td>
-                            </tr>
+                                $nombreCliente =
+                                    obtenerNombreCliente(
+                                        $datos
+                                    );
+
+                                $correo =
+                                    obtenerCorreo(
+                                        $datos
+                                    );
+
+                                $documento =
+                                    obtenerDocumento(
+                                        $datos
+                                    );
+
+                                $plan =
+                                    obtenerPlan(
+                                        $datos
+                                    );
+
+                                $payphoneStatus =
+                                    trim(
+                                        (string) (
+                                            $compra['payphone_status']
+                                            ?? ''
+                                        )
+                                    );
+
+                                $enextProcesado =
+                                    filter_var(
+                                        $compra['enext_procesado']
+                                        ?? false,
+                                        FILTER_VALIDATE_BOOLEAN
+                                    );
+
+                                $estado =
+                                    trim(
+                                        (string) (
+                                            $compra['estado']
+                                            ?? ''
+                                        )
+                                    );
+
+                                ?>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <?= escapar(
+                                            formatearFecha(
+                                                $compra['created_at']
+                                                ?? null
+                                            )
+                                        ) ?>
+
+                                    </td>
+
+
+                                    <td class="client">
+
+                                        <strong>
+
+                                            <?= escapar(
+                                                $nombreCliente
+                                            ) ?>
+
+                                        </strong>
+
+                                        <span>
+
+                                            <?= escapar(
+                                                $correo !== ''
+                                                    ? $correo
+                                                    : 'Sin correo'
+                                            ) ?>
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <?= escapar(
+                                            $documento !== ''
+                                                ? $documento
+                                                : '-'
+                                        ) ?>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <?= escapar(
+                                            $plan !== ''
+                                                ? $plan
+                                                : '-'
+                                        ) ?>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <strong>
+
+                                            <?= escapar(
+                                                formatearDinero(
+                                                    (int) (
+                                                        $compra['monto_centavos']
+                                                        ?? 0
+                                                    )
+                                                )
+                                            ) ?>
+
+                                        </strong>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <?php if ($payphoneStatus === 'Approved'): ?>
+
+                                            <span class="status approved">
+                                                Aprobado
+                                            </span>
+
+                                        <?php else: ?>
+
+                                            <span class="status pending">
+
+                                                <?= escapar(
+                                                    $payphoneStatus !== ''
+                                                        ? $payphoneStatus
+                                                        : 'Pendiente'
+                                                ) ?>
+
+                                            </span>
+
+                                        <?php endif; ?>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <?php if ($enextProcesado): ?>
+
+                                            <span class="status processed">
+                                                Procesado
+                                            </span>
+
+                                        <?php elseif ($estado === 'error'): ?>
+
+                                            <span class="status error">
+                                                Error
+                                            </span>
+
+                                        <?php else: ?>
+
+                                            <span class="status pending">
+                                                Pendiente
+                                            </span>
+
+                                        <?php endif; ?>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <button
+                                            class="view-button"
+                                            type="button"
+                                        >
+
+                                            <i class="fa-solid fa-eye"></i>
+
+                                            Ver
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+
+                        <?php endif; ?>
 
                         </tbody>
 
@@ -806,16 +1562,10 @@ if (empty($_SESSION['profirma_admin'])) {
 
             </div>
 
-            <div class="demo-note">
-                <strong>Vista de diseño:</strong>
-                los valores y clientes mostrados en este momento son ejemplos.
-                En la siguiente etapa conectaremos este panel con PostgreSQL
-                para mostrar las compras reales de PROFIRMA.
-            </div>
-
         </section>
 
     </main>
 
 </body>
+
 </html>
