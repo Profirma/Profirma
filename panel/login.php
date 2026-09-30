@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Administrativo | PROFIRMA</title>
+    <title>Acceso Administrativo | PRO-FIRMA</title>
 
     <style>
         * {
@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <h1>Panel Administrativo</h1>
-    <p class="subtitle">Acceso exclusivo para PROFIRMA</p>
+    <p class="subtitle">Acceso exclusivo para PRO-FIRMA</p>
 
     <?php if ($mensaje !== ''): ?>
         <div class="error">
@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
     <div class="security">
-        Acceso protegido · <strong>PROFIRMA</strong>
+        Acceso protegido · <strong>PRO-FIRMA</strong>
     </div>
 
 </div>
