@@ -24,7 +24,7 @@ if (empty($_SESSION['profirma_admin'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Panel Administrativo | PROFIRMA</title>
+    <title>Panel Administrativo | PRO-FIRMA</title>
 
     <!-- Font Awesome -->
     <link rel="stylesheet"
