@@ -13,7 +13,6 @@ if (empty($_SESSION['profirma_admin'])) {
 |--------------------------------------------------------------------------
 | Primera versión: DISEÑO VISUAL
 | Todavía NO consulta PostgreSQL.
-| Todavía NO tiene login.
 | NO modifica PayPhone ni eNext.
 |--------------------------------------------------------------------------
 */
@@ -525,7 +524,6 @@ if (empty($_SESSION['profirma_admin'])) {
     <aside class="sidebar">
 
         <div class="logo-area">
-            <!-- El logo está un nivel arriba de la carpeta Administración -->
             <img src="../logo.jpeg" alt="PROFIRMA">
 
             <div class="logo-text">
@@ -546,7 +544,7 @@ if (empty($_SESSION['profirma_admin'])) {
             </li>
 
             <li>
-                <a href="logout.php">
+                <a href="#">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span>Ventas</span>
                 </a>
@@ -569,7 +567,7 @@ if (empty($_SESSION['profirma_admin'])) {
         </ul>
 
         <div class="logout">
-            <a href="#">
+            <a href="logout.php">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Cerrar sesión</span>
             </a>
