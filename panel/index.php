@@ -109,9 +109,6 @@ if ($databaseUrl === '') {
         |--------------------------------------------------------------------------
         | VENTAS DE HOY
         |--------------------------------------------------------------------------
-        |
-        | Solo contamos dinero confirmado por PayPhone.
-        |
         */
 
         $stmt = $pdo->query(
@@ -128,8 +125,7 @@ if ($databaseUrl === '') {
             "
         );
 
-        $resultado =
-            $stmt->fetch();
+        $resultado = $stmt->fetch();
 
         $ventasHoy =
             (int) (
@@ -169,8 +165,7 @@ if ($databaseUrl === '') {
             "
         );
 
-        $resultado =
-            $stmt->fetch();
+        $resultado = $stmt->fetch();
 
         $ventasMes =
             (int) (
@@ -192,8 +187,7 @@ if ($databaseUrl === '') {
             "
         );
 
-        $resultado =
-            $stmt->fetch();
+        $resultado = $stmt->fetch();
 
         $totalSolicitudes =
             (int) (
@@ -216,8 +210,7 @@ if ($databaseUrl === '') {
             "
         );
 
-        $resultado =
-            $stmt->fetch();
+        $resultado = $stmt->fetch();
 
         $totalErrores =
             (int) (
@@ -230,12 +223,6 @@ if ($databaseUrl === '') {
         |--------------------------------------------------------------------------
         | ÚLTIMAS COMPRAS
         |--------------------------------------------------------------------------
-        |
-        | Mostramos únicamente pagos aprobados.
-        |
-        | Los datos personales están guardados dentro
-        | de datos_solicitud.
-        |
         */
 
         $stmt = $pdo->query(
@@ -455,7 +442,6 @@ function obtenerPlan(
         Panel Administrativo | PRO-FIRMA
     </title>
 
-    <!-- Font Awesome -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -809,13 +795,20 @@ function obtenerPlan(
         }
 
         .report-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
             border: none;
             background: var(--azul);
             color: white;
+
             padding: 11px 16px;
             border-radius: 9px;
+
             cursor: pointer;
             font-size: 13px;
+            text-decoration: none;
         }
 
         .table-container {
@@ -896,6 +889,7 @@ function obtenerPlan(
 
             color: var(--azul);
             cursor: pointer;
+            text-decoration: none;
         }
 
         .database-error {
@@ -1020,7 +1014,7 @@ function obtenerPlan(
 
             <li>
                 <a
-                    href="#"
+                    href="index.php"
                     class="active"
                 >
                     <i class="fa-solid fa-house"></i>
@@ -1030,7 +1024,7 @@ function obtenerPlan(
 
 
             <li>
-                <a href="#">
+                <a href="ventas.php">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span>Ventas</span>
                 </a>
@@ -1038,7 +1032,7 @@ function obtenerPlan(
 
 
             <li>
-                <a href="ventas.php">
+                <a href="#">
                     <i class="fa-solid fa-file-signature"></i>
                     <span>Solicitudes</span>
                 </a>
@@ -1294,16 +1288,16 @@ function obtenerPlan(
                     </div>
 
 
-                    <button
+                    <a
                         class="report-button"
-                        type="button"
+                        href="#"
                     >
 
                         <i class="fa-solid fa-chart-column"></i>
 
                         Ver reportes
 
-                    </button>
+                    </a>
 
                 </div>
 
