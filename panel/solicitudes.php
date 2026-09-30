@@ -17,7 +17,7 @@ date_default_timezone_set('America/Guayaquil');
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Solicitudes | PRO-FIRMA</title>
+<title>Solicitudes | PROFIRMA</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,13 +44,13 @@ date_default_timezone_set('America/Guayaquil');
     --navy: #07396b;
     --navy-dark: #052d55;
     --blue: #0b4d8d;
-    --light-blue: #eef5fb;
     --background: #f5f7fb;
     --white: #ffffff;
     --text: #172033;
     --muted: #718096;
     --border: #e3e8ef;
     --green: #16845a;
+    --red: #c93636;
 }
 
 body {
@@ -72,12 +72,11 @@ body {
     width: 250px;
     height: 100vh;
 
-    background:
-        linear-gradient(
-            180deg,
-            #07396b 0%,
-            #052d55 100%
-        );
+    background: linear-gradient(
+        180deg,
+        #07396b 0%,
+        #052d55 100%
+    );
 
     color: white;
 
@@ -121,7 +120,6 @@ body {
 
 .menu {
     padding: 20px 12px;
-
     flex: 1;
 }
 
@@ -181,7 +179,8 @@ body {
 
     background: white;
 
-    border-bottom: 1px solid var(--border);
+    border-bottom:
+        1px solid var(--border);
 
     display: flex;
     align-items: center;
@@ -320,7 +319,7 @@ body {
 
 
 /* =========================================================
-   TARJETA
+   TARJETAS
 ========================================================= */
 
 .card {
@@ -396,7 +395,6 @@ body {
 
 .person-card.active {
     border-color: var(--navy);
-
     background: #f3f8fc;
 }
 
@@ -459,8 +457,6 @@ body {
 }
 
 .plan {
-    position: relative;
-
     border: 2px solid var(--border);
 
     border-radius: 12px;
@@ -482,7 +478,6 @@ body {
 
 .plan.active {
     border-color: var(--navy);
-
     background: #f2f7fc;
 }
 
@@ -514,11 +509,6 @@ body {
     font-size: 9px;
 }
 
-
-/* =========================================================
-   RESUMEN
-========================================================= */
-
 .selection-summary {
     margin-top: 20px;
 
@@ -533,7 +523,6 @@ body {
     display: flex;
 
     justify-content: space-between;
-
     align-items: center;
 }
 
@@ -565,7 +554,6 @@ body {
 
 .summary-price strong {
     color: var(--green);
-
     font-size: 21px;
 }
 
@@ -661,7 +649,7 @@ body {
 
 
 /* =========================================================
-   AVISO
+   MENSAJES
 ========================================================= */
 
 .admin-notice {
@@ -686,8 +674,40 @@ body {
     line-height: 1.6;
 }
 
-.admin-notice i {
-    margin-top: 2px;
+.result-message {
+    margin-top: 20px;
+
+    padding: 17px;
+
+    border-radius: 11px;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+.result-success {
+    background: #eaf8f1;
+
+    border: 1px solid #b9e4ce;
+
+    color: #126342;
+}
+
+.result-error {
+    background: #fdecec;
+
+    border: 1px solid #f0c0c0;
+
+    color: #a62f2f;
+}
+
+.result-message strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 13px;
 }
 
 
@@ -710,12 +730,11 @@ body {
 
     padding: 13px 23px;
 
-    background:
-        linear-gradient(
-            135deg,
-            #07396b,
-            #0b4d8d
-        );
+    background: linear-gradient(
+        135deg,
+        #07396b,
+        #0b4d8d
+    );
 
     color: white;
 
@@ -732,10 +751,19 @@ body {
     align-items: center;
 
     gap: 9px;
+
+    min-width: 160px;
+
+    justify-content: center;
 }
 
 .submit-button:hover {
     background: var(--navy-dark);
+}
+
+.submit-button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
 }
 
 
@@ -902,11 +930,6 @@ body {
                 Emitir firma electrónica
             </h2>
 
-            <p>
-                Emisión administrativa 
-          
-            </p>
-
         </div>
 
 
@@ -1068,7 +1091,7 @@ body {
                     </span>
 
                     <strong id="summaryPrice">
-                        $0
+                        $0.00
                     </strong>
 
                 </div>
@@ -1101,27 +1124,6 @@ body {
                 id="firmaForm"
                 autocomplete="off"
             >
-
-
-                <input
-                    type="hidden"
-                    id="tipoPersona"
-                    name="tipoPersona"
-                >
-
-
-                <input
-                    type="hidden"
-                    id="vigencia"
-                    name="vigencia"
-                >
-
-
-                <input
-                    type="hidden"
-                    id="precio"
-                    name="precio"
-                >
 
 
                 <div class="form-grid">
@@ -1210,7 +1212,7 @@ body {
                     <div class="field">
 
                         <label>
-                            Teléfono / WhatsApp *
+                            Teléfono *
                         </label>
 
                         <input
@@ -1363,17 +1365,17 @@ body {
                         <strong>
                             Emisión administrativa
                         </strong>
-
-                        <br>
-
-                        El valor mostrado es únicamente una
-                        referencia para administración.
-                        Esta solicitud no será enviada a
-                        PayPhone ni será registrada como
-                        una venta pagada.
+                        
 
                     </div>
 
+                </div>
+
+
+                <div
+                    id="resultMessage"
+                    class="result-message hidden"
+                >
                 </div>
 
 
@@ -1382,11 +1384,14 @@ body {
                     <button
                         type="submit"
                         class="submit-button"
+                        id="submitButton"
                     >
 
                         <i class="fa-solid fa-file-signature"></i>
 
-                        Preparar emisión
+                        <span id="submitText">
+                            Emitir firma
+                        </span>
 
                     </button>
 
@@ -1406,9 +1411,20 @@ body {
 <script>
 
 /* =========================================================
-   PLANES ADMINISTRATIVOS
-   El precio es solo informativo.
+   PLANES
 ========================================================= */
+
+/*
+    Los perfiles eNext confirmados son:
+
+    018 = 15 días
+    001 = 1 mes
+    002 = 1 año
+    005 = 2 años
+    010 = 3 años
+    007 = 4 años
+    013 = 5 años
+*/
 
 const planes = {
 
@@ -1416,77 +1432,44 @@ const planes = {
 
         {
             nombre: '15 Días',
-            precio: 8
+            precio: 8,
+            perfil: '018'
         },
 
         {
             nombre: '1 Mes',
-            precio: 12
+            precio: 12,
+            perfil: '001'
         },
 
         {
             nombre: '1 Año',
-            precio: 20
+            precio: 20,
+            perfil: '002'
         },
 
         {
             nombre: '2 Años',
-            precio: 30
+            precio: 30,
+            perfil: '005'
         },
 
         {
             nombre: '3 Años',
-            precio: 40
+            precio: 40,
+            perfil: '010'
         },
 
         {
             nombre: '4 Años',
-            precio: 50
+            precio: 50,
+            perfil: '007'
         },
 
         {
             nombre: '5 Años',
-            precio: 55
-        }
-
-    ],
-
-
-    juridica: [
-
-        {
-            nombre: '15 Días',
-            precio: 8
-        },
-
-        {
-            nombre: '1 Mes',
-            precio: 12
-        },
-
-        {
-            nombre: '1 Año',
-            precio: 20
-        },
-
-        {
-            nombre: '2 Años',
-            precio: 30
-        },
-
-        {
-            nombre: '3 Años',
-            precio: 40
-        },
-
-        {
-            nombre: '4 Años',
-            precio: 50
-        },
-
-        {
-            nombre: '5 Años',
-            precio: 55
+            precio: 55,
+            perfil: '013'
         }
 
     ]
@@ -1494,8 +1477,13 @@ const planes = {
 };
 
 
+/* =========================================================
+   VARIABLES
+========================================================= */
+
 let tipoSeleccionado = '';
 let planSeleccionado = null;
+let enviando = false;
 
 
 const personCards =
@@ -1525,9 +1513,18 @@ const formSection =
 const firmaForm =
     document.getElementById('firmaForm');
 
+const resultMessage =
+    document.getElementById('resultMessage');
+
+const submitButton =
+    document.getElementById('submitButton');
+
+const submitText =
+    document.getElementById('submitText');
+
 
 /* =========================================================
-   SELECCIONAR PERSONA
+   TIPO DE PERSONA
 ========================================================= */
 
 personCards.forEach(card => {
@@ -1540,25 +1537,12 @@ personCards.forEach(card => {
 
         card.classList.add('active');
 
+
         tipoSeleccionado =
             card.dataset.type;
 
+
         planSeleccionado = null;
-
-
-        document.getElementById(
-            'tipoPersona'
-        ).value = tipoSeleccionado;
-
-
-        document.getElementById(
-            'vigencia'
-        ).value = '';
-
-
-        document.getElementById(
-            'precio'
-        ).value = '';
 
 
         selectionSummary.classList.add(
@@ -1569,10 +1553,78 @@ personCards.forEach(card => {
             'hidden'
         );
 
-
-        renderPlanes(
-            tipoSeleccionado
+        resultMessage.classList.add(
+            'hidden'
         );
+
+
+        document
+            .getElementById('step3')
+            .classList.remove('active');
+
+
+        /*
+        -------------------------------------------------------
+        PERSONA JURÍDICA
+        -------------------------------------------------------
+        No la enviamos con el formulario de Persona Natural.
+        eNext requiere información adicional para PJ.
+        -------------------------------------------------------
+        */
+
+        if (tipoSeleccionado === 'juridica') {
+
+            plansSection.classList.remove(
+                'hidden'
+            );
+
+
+            plansContainer.innerHTML = '';
+
+
+            plansDescription.innerHTML = `
+
+                <div
+                    style="
+                        padding:15px;
+                        background:#fff9e8;
+                        border:1px solid #f0dfad;
+                        border-radius:10px;
+                        color:#715b1b;
+                        line-height:1.6;
+                    "
+                >
+
+                    <strong>
+                        Persona Jurídica
+                    </strong>
+
+                    <br>
+
+                    La emisión de Persona Jurídica se configurará
+                    con su formulario específico antes de habilitarla.
+
+                </div>
+
+            `;
+
+
+            document
+                .getElementById('step2')
+                .classList.add('active');
+
+
+            return;
+        }
+
+
+        /*
+        -------------------------------------------------------
+        PERSONA NATURAL
+        -------------------------------------------------------
+        */
+
+        renderPlanes('natural');
 
 
         plansSection.classList.remove(
@@ -1580,14 +1632,9 @@ personCards.forEach(card => {
         );
 
 
-        document.getElementById(
-            'step2'
-        ).classList.add('active');
-
-
-        document.getElementById(
-            'step3'
-        ).classList.remove('active');
+        document
+            .getElementById('step2')
+            .classList.add('active');
 
     });
 
@@ -1595,7 +1642,7 @@ personCards.forEach(card => {
 
 
 /* =========================================================
-   MOSTRAR PLANES
+   MOSTRAR PLANES NATURAL
 ========================================================= */
 
 function renderPlanes(tipo) {
@@ -1604,9 +1651,7 @@ function renderPlanes(tipo) {
 
 
     plansDescription.textContent =
-        tipo === 'natural'
-            ? 'Firmas disponibles para Persona Natural.'
-            : 'Firmas disponibles para Persona Jurídica.';
+        'Selecciona la vigencia de la firma electrónica.';
 
 
     planes[tipo].forEach(plan => {
@@ -1665,9 +1710,11 @@ function seleccionarPlan(
     document
         .querySelectorAll('.plan')
         .forEach(item => {
+
             item.classList.remove(
                 'active'
             );
+
         });
 
 
@@ -1679,28 +1726,14 @@ function seleccionarPlan(
     planSeleccionado = plan;
 
 
-    document.getElementById(
-        'vigencia'
-    ).value = plan.nombre;
-
-
-    document.getElementById(
-        'precio'
-    ).value = plan.precio;
-
-
     summaryPlan.textContent =
-        (
-            tipoSeleccionado === 'natural'
-                ? 'Persona Natural'
-                : 'Persona Jurídica'
-        )
-        + ' · '
-        + plan.nombre;
+        'Persona Natural · ' +
+        plan.nombre;
 
 
     summaryPrice.textContent =
-        '$' + plan.precio.toFixed(2);
+        '$' +
+        plan.precio.toFixed(2);
 
 
     selectionSummary.classList.remove(
@@ -1713,11 +1746,14 @@ function seleccionarPlan(
     );
 
 
-    document.getElementById(
-        'step3'
-    ).classList.add(
-        'active'
+    resultMessage.classList.add(
+        'hidden'
     );
+
+
+    document
+        .getElementById('step3')
+        .classList.add('active');
 
 
     setTimeout(() => {
@@ -1733,24 +1769,94 @@ function seleccionarPlan(
 
 
 /* =========================================================
-   FORMULARIO
-   TODAVÍA NO ENVÍA A ENEXT.
+   MOSTRAR RESULTADO
+========================================================= */
+
+function mostrarResultado(
+    tipo,
+    titulo,
+    mensaje
+) {
+
+    resultMessage.className =
+        'result-message ' +
+        (
+            tipo === 'success'
+                ? 'result-success'
+                : 'result-error'
+        );
+
+
+    resultMessage.innerHTML = `
+
+        <strong>
+            ${escaparHtml(titulo)}
+        </strong>
+
+        ${escaparHtml(mensaje)}
+
+    `;
+
+
+    resultMessage.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+    });
+
+}
+
+
+/* =========================================================
+   ESCAPAR TEXTO
+========================================================= */
+
+function escaparHtml(valor) {
+
+    const div =
+        document.createElement('div');
+
+    div.textContent =
+        String(valor ?? '');
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================================================
+   ENVIAR A ENEXT
 ========================================================= */
 
 firmaForm.addEventListener(
     'submit',
-    function(event) {
+    async function(event) {
 
         event.preventDefault();
 
 
-        if (
-            !tipoSeleccionado ||
-            !planSeleccionado
-        ) {
+        if (enviando) {
+            return;
+        }
 
-            alert(
-                'Primero selecciona el tipo de persona y la firma.'
+
+        if (tipoSeleccionado !== 'natural') {
+
+            mostrarResultado(
+                'error',
+                'Emisión no disponible',
+                'Por ahora la emisión directa está habilitada únicamente para Persona Natural.'
+            );
+
+            return;
+        }
+
+
+        if (!planSeleccionado) {
+
+            mostrarResultado(
+                'error',
+                'Falta seleccionar la firma',
+                'Selecciona primero la vigencia de la firma.'
             );
 
             return;
@@ -1774,17 +1880,260 @@ firmaForm.addEventListener(
 
         if (!/^[0-9]{10}$/.test(cedula)) {
 
-            alert(
-                'Ingresa una cédula válida de 10 dígitos.'
+            mostrarResultado(
+                'error',
+                'Cédula incorrecta',
+                'La cédula debe contener exactamente 10 dígitos.'
             );
 
             return;
         }
 
 
-        alert(
-            'Formulario listo. Todavía no se ha enviado a eNext.'
+        /*
+        -------------------------------------------------------
+        DATOS PARA EL BACKEND
+        -------------------------------------------------------
+        NO enviamos precio a eNext.
+        NO enviamos datos de PayPhone.
+        -------------------------------------------------------
+        */
+
+        const payload = {
+
+            tipo_persona:
+                'natural',
+
+            perfil_firma:
+                planSeleccionado.perfil,
+
+            nombres:
+                document
+                    .getElementById('nombres')
+                    .value
+                    .trim(),
+
+            apellidos:
+                document
+                    .getElementById('apellidos')
+                    .value
+                    .trim(),
+
+            cedula:
+                cedula,
+
+            codigo_dactilar:
+                document
+                    .getElementById('codigo_dactilar')
+                    .value
+                    .trim(),
+
+            celular:
+                document
+                    .getElementById('celular')
+                    .value
+                    .trim(),
+
+            correo:
+                document
+                    .getElementById('correo')
+                    .value
+                    .trim(),
+
+            direccion:
+                document
+                    .getElementById('direccion')
+                    .value
+                    .trim(),
+
+            provincia:
+                document
+                    .getElementById('provincia')
+                    .value
+                    .trim(),
+
+            ciudad:
+                document
+                    .getElementById('ciudad')
+                    .value
+                    .trim(),
+
+            parroquia:
+                document
+                    .getElementById('parroquia')
+                    .value
+                    .trim()
+
+        };
+
+
+        /*
+        -------------------------------------------------------
+        CONFIRMACIÓN
+        -------------------------------------------------------
+        Importante porque después de aceptar se crea
+        una solicitud REAL en eNext.
+        -------------------------------------------------------
+        */
+
+        const confirmar = window.confirm(
+
+            'Vas a emitir una firma REAL en eNext.\n\n' +
+
+            'Titular: ' +
+            payload.nombres +
+            ' ' +
+            payload.apellidos +
+            '\n' +
+
+            'Cédula: ' +
+            payload.cedula +
+            '\n' +
+
+            'Vigencia: ' +
+            planSeleccionado.nombre +
+            '\n\n' +
+
+            '¿Deseas continuar?'
+
         );
+
+
+        if (!confirmar) {
+            return;
+        }
+
+
+        enviando = true;
+
+
+        submitButton.disabled = true;
+
+
+        submitText.textContent =
+            'Enviando a eNext...';
+
+
+        resultMessage.classList.add(
+            'hidden'
+        );
+
+
+        try {
+
+
+            const response = await fetch(
+                'procesar_emision.php',
+                {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type':
+                            'application/json',
+
+                        'Accept':
+                            'application/json'
+                    },
+
+                    body:
+                        JSON.stringify(payload)
+
+                }
+            );
+
+
+            let result;
+
+
+            try {
+
+                result =
+                    await response.json();
+
+            } catch (jsonError) {
+
+                throw new Error(
+                    'El servidor devolvió una respuesta inválida.'
+                );
+
+            }
+
+
+            if (
+                !response.ok ||
+                Number(result.codigo) !== 1
+            ) {
+
+                throw new Error(
+                    result.mensaje ||
+                    'eNext rechazó la solicitud.'
+                );
+
+            }
+
+
+            /*
+            ---------------------------------------------------
+            ÉXITO
+            ---------------------------------------------------
+            NO mostramos token.
+            NO mostramos enlace biométrico.
+            ---------------------------------------------------
+            */
+
+            const numeroTramite =
+                result.numero_tramite
+                ? ' Trámite: ' +
+                  result.numero_tramite +
+                  '.'
+                : '';
+
+
+            mostrarResultado(
+                'success',
+                'Solicitud enviada correctamente a eNext',
+                'La información para continuar el proceso fue enviada al cliente por el medio configurado.' +
+                numeroTramite
+            );
+
+
+            /*
+            ---------------------------------------------------
+            LIMPIAR DATOS DEL CLIENTE
+            ---------------------------------------------------
+            Conservamos persona y plan seleccionados para
+            facilitar una nueva emisión del mismo tipo.
+            ---------------------------------------------------
+            */
+
+            firmaForm.reset();
+
+
+        } catch (error) {
+
+
+            mostrarResultado(
+                'error',
+                'No se pudo emitir la firma',
+                error.message ||
+                'Ocurrió un error al comunicarse con eNext.'
+            );
+
+
+        } finally {
+
+
+            enviando = false;
+
+
+            submitButton.disabled = false;
+
+
+            submitText.textContent =
+                'Emitir firma';
+
+        }
 
     }
 );
